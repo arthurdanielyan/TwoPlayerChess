@@ -9,7 +9,7 @@ public abstract class Figure {
     public Position position;
 
     protected char figureChar;
-    protected boolean isWhite;
+    protected final boolean isWhite;
 
     protected void init(char figureChar, Position pos) {
         this.figureChar = figureChar;
