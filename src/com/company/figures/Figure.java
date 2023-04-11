@@ -8,18 +8,19 @@ public abstract class Figure {
 
     public Position position;
 
-    protected boolean isWhite;
     protected char figureChar;
+    protected boolean isWhite;
 
-    protected void init(char figureChar, boolean isWhite, Position pos) {
+    protected void init(char figureChar, Position pos) {
         this.figureChar = figureChar;
-        this.isWhite = isWhite;
         this.position = pos;
     }
 
 
     /** Used to have time to determine figure char before calling the method init above */
-    public Figure(){}
+    public Figure(boolean isWhite) {
+        this.isWhite = isWhite;
+    }
 
 
     public abstract List<Position> possibleMoves();

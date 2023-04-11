@@ -1,7 +1,8 @@
-package com.company.figures;
+package com.company.figures.figur_impls;
 
 import com.company.Game;
 import com.company.core.Position;
+import com.company.figures.Figure;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import static com.company.core.Extensions.isLegalCell;
 public class King extends Figure {
 
     public King(boolean isWhite) {
-        super();
+        super(isWhite);
 
         char figureChar;
         int x = E.num;
@@ -27,7 +28,7 @@ public class King extends Figure {
             y = 8;
         }
 
-        init(figureChar, isWhite, new Position(x, y));
+        init(figureChar, new Position(x, y));
     }
 
     @Override
