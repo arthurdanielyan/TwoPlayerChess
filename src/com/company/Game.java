@@ -4,6 +4,7 @@ import com.company.core.BoardLetters;
 import com.company.core.Position;
 import com.company.figures.Figure;
 import com.company.figures.figur_impls.King;
+import com.company.figures.figur_impls.Queen;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +24,9 @@ public class Game {
 
     public static List<Figure> board = new ArrayList<>();
     static {
-        King whiteKing = new King(true);
-        whiteKing.position = new Position(BoardLetters.E.num, 1);
-        board.add(whiteKing);
+        Queen queen = new Queen(true);
+        queen.position = new Position(BoardLetters.B.num, 3);
 
-        King blackKing = new King(true);
-        blackKing.position = new Position(BoardLetters.E.num, 2);
-        board.add(blackKing);
+        board.add(queen);
     }
 }
