@@ -56,7 +56,7 @@ public class King extends Figure {
     @Override
     protected void removeOccupiedCells(List<Position> possibleMoves) {
         super.removeOccupiedCells(possibleMoves);
-        for(Figure f : Game.board) {
+        for(Figure f : Game.figures) {
             if(f instanceof Pawn) {
                 possibleMoves.removeAll(((Pawn) f).controlCells());
             } else

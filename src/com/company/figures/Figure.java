@@ -28,7 +28,7 @@ public abstract class Figure {
 
     /** Should be called at the end of possibleMoves() */
     protected void removeOccupiedCells(List<Position> possibleMoves) {
-        for (Figure f : Game.board) {
+        for (Figure f : Game.figures) {
             if(f.isWhite == this.isWhite || f instanceof King) {
                 possibleMoves.remove(f.position);
             }
