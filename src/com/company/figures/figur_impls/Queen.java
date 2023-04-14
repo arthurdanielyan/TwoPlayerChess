@@ -15,7 +15,6 @@ public class Queen extends Figure {
         super(isWhite);
 
         char figureChar;
-        int x = D.num;
         int y;
 
         if(isWhite) {
@@ -27,38 +26,24 @@ public class Queen extends Figure {
             y = 8;
         }
 
-        init(figureChar, new Position(x, y));
+        init(figureChar, new Position(D, y));
     }
 
     @Override
     public List<Position> possibleMoves() {
-        ArrayList<Position> possibleMoves = new ArrayList<>();
 
-        for(int i = 1; i <= 8; i++) {
-            if(i == this.position.x) continue;
-            possibleMoves.add(new Position(i, position.y));
-        }
-        for(int i = 1; i <= 8; i++) {
-            if(i == this.position.y) continue;
-            possibleMoves.add(new Position(position.x, i));
-        }
+        // straight moves
+        Rook straightMoves = new Rook(this.isWhite);
+        straightMoves.position = this.position;
+        List<Position> possibleMoves = new ArrayList<>(straightMoves.possibleMoves());
 
-//        for(int y = 1; y <= 8; y++) {
-//            for(int x = 1; x <= 8; x++) {
-//                if(new Position(x, y).equals(this.position)) continue;
-//                if(Math.abs(y - this.position.y) == Math.abs(x - this.position.x)) {
-//                    possibleMoves.add(new Position(x, y));
-//                }
-//            }
-//        }
-        for(int x = this.position.x+1; x <= 8; x++) {
-            int i = x - (this.position.x+1) + 1;
-            System.out.println(x);
-            possibleMoves.add(new Position(this.position.x + i, position.y + i));
-            possibleMoves.add(new Position(this.position.x + i, position.y - i));
-        }
+        // diagonal moves
+        Bishop diagonalMoves = new Bishop(this.isWhite);
+        diagonalMoves.position = this.position;
+        possibleMoves.addAll(diagonalMoves.possibleMoves());
 
 
+        removeOccupiedCells(possibleMoves);
         return possibleMoves;
     }
 }

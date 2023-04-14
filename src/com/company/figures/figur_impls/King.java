@@ -16,7 +16,6 @@ public class King extends Figure {
         super(isWhite);
 
         char figureChar;
-        int x = E.num;
         int y;
 
         if(isWhite) {
@@ -28,7 +27,7 @@ public class King extends Figure {
             y = 8;
         }
 
-        init(figureChar, new Position(x, y));
+        init(figureChar, new Position(E, y));
     }
 
     @Override
@@ -49,10 +48,20 @@ public class King extends Figure {
         if(isLegalCell(position.y+1)) possibleMoves.add(new Position(position.x, position.y+1));
         if(isLegalCell(position.y-1)) possibleMoves.add(new Position(position.x, position.y-1));
 
-        for (Figure f : Game.board) {
-            possibleMoves.remove(f.position);
-        }
+        this.removeOccupiedCells(possibleMoves);
 
         return possibleMoves;
+    }
+
+    @Override
+    protected void removeOccupiedCells(List<Position> possibleMoves) {
+        super.removeOccupiedCells(possibleMoves);
+        for(Figure f : Game.board) {
+            if(f instanceof Pawn) {
+                possibleMoves.removeAll(((Pawn) f).controlCells());
+            } else
+            if(f.isWhite != this.isWhite)
+            possibleMoves.removeAll(f.possibleMoves());
+        }
     }
 }
