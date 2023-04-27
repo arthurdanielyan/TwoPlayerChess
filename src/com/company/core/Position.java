@@ -1,6 +1,10 @@
 package com.company.core;
 
+import com.company.core.exceptions.IllegalSquare;
+
 import java.util.Objects;
+
+import static com.company.core.Extensions.isLegalSquare;
 
 public class Position {
 
@@ -8,10 +12,8 @@ public class Position {
     public int x; /** numbers on the board */
 
     public Position(int x, int y) {
-        if(x < 1 || x > 8) {
-            throw new IllegalArgumentException("move x must be in range of [1, 8]");
-        } else if(y > 8 || y < 1) {
-            throw new IllegalArgumentException("move y must be in range of [1, 8]");
+        if(!isLegalSquare(x) || !isLegalSquare(y)) {
+            throw new IllegalSquare(new Position(x, y));
         }
 
         this.x = x;

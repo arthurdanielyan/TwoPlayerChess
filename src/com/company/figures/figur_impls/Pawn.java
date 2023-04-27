@@ -1,6 +1,5 @@
 package com.company.figures.figur_impls;
 
-import com.company.core.BoardLetters;
 import com.company.core.Position;
 import com.company.figures.Figure;
 
@@ -9,22 +8,15 @@ import java.util.List;
 
 public class Pawn extends Figure {
 
-    public Pawn(boolean isWhite) {
-        super(isWhite);
-
-        char figureChar;
-        int y;
+    public Pawn(Position position, boolean isWhite) {
+        super(position, isWhite);
 
         if(isWhite) {
             figureChar = '♟';
-            y = 2;
         }
         else {
             figureChar = '♙';
-            y = 7;
         }
-
-        init(figureChar, new Position(BoardLetters.H, y));
     }
 
     @Override
@@ -49,7 +41,8 @@ public class Pawn extends Figure {
         return possibleMoves;
     }
 
-    public List<Position> controlCells() {
+    @Override
+    public List<Position> controlSquares() {
         List<Position> controlCells = new ArrayList<>();
         try{
             controlCells.add(new Position(position.x+1, position.y+1));

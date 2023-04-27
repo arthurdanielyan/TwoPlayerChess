@@ -2,66 +2,69 @@ package com.company.figures.figur_impls;
 
 import com.company.Game;
 import com.company.core.Position;
+import com.company.core.exceptions.IllegalSquare;
 import com.company.figures.Figure;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.company.core.BoardLetters.E;
-import static com.company.core.Extensions.isLegalCell;
-
 public class King extends Figure {
 
-    public King(boolean isWhite) {
-        super(isWhite);
-
-        char figureChar;
-        int y;
+    public King(Position position, boolean isWhite) {
+        super(position, isWhite);
 
         if(isWhite) {
             figureChar = '♚';
-            y = 1;
         }
         else {
             figureChar = '♔';
-            y = 8;
         }
-
-        init(figureChar, new Position(E, y));
     }
 
     @Override
     public List<Position> possibleMoves() {
         ArrayList<Position> possibleMoves = new ArrayList<>();
-        if(isLegalCell(position.x-1)) {
+        try { // 1
             possibleMoves.add(new Position(position.x-1, position.y));
-
-            if(isLegalCell(position.y-1)) possibleMoves.add(new Position(position.x-1, position.y-1));
-            if(isLegalCell(position.y+1)) possibleMoves.add(new Position(position.x-1, position.y+1));
-        }
-        if(isLegalCell(position.x+1)) {
+        } catch (IllegalSquare ignore) {}
+        try { // 2
+            possibleMoves.add(new Position(position.x-1, position.y-1));
+        } catch (IllegalSquare ignore) {}
+        try { // 3
+            possibleMoves.add(new Position(position.x-1, position.y+1));
+        } catch (IllegalSquare ignore) {}
+        try { // 4
             possibleMoves.add(new Position(position.x+1, position.y));
-
-            if(isLegalCell(position.y-1)) possibleMoves.add(new Position(position.x+1, position.y-1));
-            if(isLegalCell(position.y+1)) possibleMoves.add(new Position(position.x+1, position.y+1));
-        }
-        if(isLegalCell(position.y+1)) possibleMoves.add(new Position(position.x, position.y+1));
-        if(isLegalCell(position.y-1)) possibleMoves.add(new Position(position.x, position.y-1));
+        } catch (IllegalSquare ignore) {}
+        try { // 5
+            possibleMoves.add(new Position(position.x+1, position.y-1));
+        } catch (IllegalSquare ignore) {}
+        try { // 6
+            possibleMoves.add(new Position(position.x+1, position.y+1));
+        } catch (IllegalSquare ignore) {}
+        try { // 7
+            possibleMoves.add(new Position(position.x, position.y+1));
+        } catch (IllegalSquare ignore) {}
+        try { // 8
+            possibleMoves.add(new Position(position.x, position.y-1));
+        } catch (IllegalSquare ignore) {}
 
         this.removeOccupiedCells(possibleMoves);
+        this.removeUnderCheckCells(possibleMoves);
 
         return possibleMoves;
     }
 
-    @Override
-    protected void removeOccupiedCells(List<Position> possibleMoves) {
-        super.removeOccupiedCells(possibleMoves);
-        for(Figure f : Game.figures) {
-            if(f instanceof Pawn) {
-                possibleMoves.removeAll(((Pawn) f).controlCells());
-            } else
+
+    protected void removeUnderCheckCells(List<Position> possibleMoves) {
+        for(Figure f : Game.board.figures) {
             if(f.isWhite != this.isWhite)
-            possibleMoves.removeAll(f.possibleMoves());
+            possibleMoves.removeAll(f.controlSquares());
         }
+    }
+
+    @Override
+    public List<Position> controlSquares() {
+        return possibleMoves();
     }
 }

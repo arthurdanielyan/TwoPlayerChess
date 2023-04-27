@@ -2,6 +2,7 @@ package com.company.figures.figur_impls;
 
 import com.company.core.BoardLetters;
 import com.company.core.Position;
+import com.company.core.exceptions.IllegalSquare;
 import com.company.figures.Figure;
 
 import java.util.ArrayList;
@@ -10,22 +11,15 @@ import java.util.List;
 public class Knight extends Figure {
 
 
-    public Knight(boolean isWhite) {
-        super(isWhite);
-
-        char figureChar;
-        int y;
+    public Knight(Position position, boolean isWhite) {
+        super(position, isWhite);
 
         if(isWhite) {
             figureChar = '♞';
-            y = 1;
         }
         else {
             figureChar = '♘';
-            y = 8;
         }
-
-        init(figureChar, new Position(BoardLetters.G, y));
     }
 
     @Override
@@ -36,30 +30,31 @@ public class Knight extends Figure {
         try {
             possibleMoves.add(new Position(position.x + 1, position.y - 2));
             System.out.println(new Position(position.x + 1, position.y - 2));
-        } catch (IllegalArgumentException ignored) {}
+        } catch (IllegalSquare ignored) {}
         try {
             possibleMoves.add(new Position(position.x - 1, position.y - 2));
-        } catch (IllegalArgumentException ignored) {}
+        } catch (IllegalSquare ignored) {}
         try {
             possibleMoves.add(new Position(position.x + 1, position.y + 2));
-        } catch (IllegalArgumentException ignored) {}
+        } catch (IllegalSquare ignored) {}
         try {
             possibleMoves.add(new Position(position.x - 1, position.y + 2));
-        } catch (IllegalArgumentException ignored) {}
+        } catch (IllegalSquare ignored) {}
         try {
             possibleMoves.add(new Position(position.x + 2, position.y + 1));
-        } catch (IllegalArgumentException ignored) {}
+        } catch (IllegalSquare ignored) {}
         try {
             possibleMoves.add(new Position(position.x + 2, position.y - 1));
-        } catch (IllegalArgumentException ignored) {}
+        } catch (IllegalSquare ignored) {}
         try {
             possibleMoves.add(new Position(position.x - 2, position.y + 1));
-        } catch (IllegalArgumentException ignored) {}
+        } catch (IllegalSquare ignored) {}
         try {
             possibleMoves.add(new Position(position.x - 2, position.y - 1));
-        } catch (IllegalArgumentException ignored) {}
+        } catch (IllegalSquare ignored) {}
 
-        removeOccupiedCells(possibleMoves);
+        this.removeOccupiedCells(possibleMoves);
+
         return possibleMoves;
     }
 }

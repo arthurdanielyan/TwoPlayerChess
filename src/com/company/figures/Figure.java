@@ -2,9 +2,9 @@ package com.company.figures;
 
 import com.company.Game;
 import com.company.core.Position;
-import com.company.figures.figur_impls.King;
 
 import java.util.List;
+import java.util.Objects;
 
 public abstract class Figure {
 
@@ -13,27 +13,59 @@ public abstract class Figure {
     public char figureChar;
     public final boolean isWhite;
 
-    protected void init(char figureChar, Position pos) {
-        this.figureChar = figureChar;
-        this.position = pos;
-    }
-
-
-    /** Used to have time to determine figure char before calling the method init above */
-    protected Figure(boolean isWhite) {
+    protected Figure(Position position, boolean isWhite) {
+        this.position = position;
         this.isWhite = isWhite;
     }
 
 
+    public abstract List<Position> possibleMoves();
 
-    /** Should be called at the end of possibleMoves() */
+    /** isn't needed for Rook, Bishop and Queen */
     protected void removeOccupiedCells(List<Position> possibleMoves) {
-        for (Figure f : Game.figures) {
-            if(f.isWhite == this.isWhite || f instanceof King) {
-                possibleMoves.remove(f.position);
-            }
-        }
+        possibleMoves.removeIf(position -> {
+            Figure figureAtPos = Game.board.getFigureByPosition(position);
+            return figureAtPos != null && figureAtPos.position.equals(position) && figureAtPos.isWhite == Figure.this.isWhite;
+        });
     }
 
-    public abstract List<Position> possibleMoves();
+    /** King should check controlled squares with this not with possibleMoves()
+     *  because some squares may be covered by the king itself
+     *
+     *  Example: Ke3, Re2
+     *
+     *  The only difference between implementations of this and possibleMoves()
+     *  is that this ignores the opposite color king as a piece
+     * */
+    public abstract List<Position> controlSquares();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Figure figure = (Figure) o;
+        return figureChar == figure.figureChar && isWhite == figure.isWhite && position.equals(figure.position);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(position, figureChar, isWhite);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if(isWhite) {
+            sb.append("White ");
+        } else {
+            sb.append("Black ");
+        }
+
+        sb
+          .append(this.getClass().getSimpleName())
+          .append(" at square ")
+          .append(position);
+
+        return sb.toString();
+    }
 }
