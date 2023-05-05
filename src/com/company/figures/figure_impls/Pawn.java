@@ -1,4 +1,4 @@
-package com.company.figures.figur_impls;
+package com.company.figures.figure_impls;
 
 import com.company.core.Position;
 import com.company.figures.Figure;

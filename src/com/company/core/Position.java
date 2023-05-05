@@ -1,6 +1,6 @@
 package com.company.core;
 
-import com.company.core.exceptions.IllegalSquare;
+import com.company.core.exceptions.IllegalSquareException;
 
 import java.util.Objects;
 
@@ -13,7 +13,7 @@ public class Position {
 
     public Position(int x, int y) {
         if(!isLegalSquare(x) || !isLegalSquare(y)) {
-            throw new IllegalSquare(new Position(x, y));
+            throw new IllegalSquareException(new Position(x, y));
         }
 
         this.x = x;

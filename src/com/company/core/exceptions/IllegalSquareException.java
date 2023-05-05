@@ -2,11 +2,11 @@ package com.company.core.exceptions;
 
 import com.company.core.Position;
 
-public class IllegalSquare extends IndexOutOfBoundsException {
+public class IllegalSquareException extends IndexOutOfBoundsException {
 
     private Position position;
 
-    public IllegalSquare(Position position) {
+    public IllegalSquareException(Position position) {
         this.position = position;
     }
 

@@ -19,15 +19,16 @@ public abstract class Figure {
     }
 
 
-    public abstract List<Position> possibleMoves();
-
-    /** isn't needed for Rook, Bishop and Queen */
-    protected void removeOccupiedCells(List<Position> possibleMoves) {
+    /** isn't needed for Rook, Bishop and Queen, because their combinedMoves() function handles it */
+    protected final void removeOccupiedCells(List<Position> possibleMoves) {
         possibleMoves.removeIf(position -> {
             Figure figureAtPos = Game.board.getFigureByPosition(position);
             return figureAtPos != null && figureAtPos.position.equals(position) && figureAtPos.isWhite == Figure.this.isWhite;
         });
     }
+
+
+    public abstract List<Position> possibleMoves();
 
     /** King should check controlled squares with this not with possibleMoves()
      *  because some squares may be covered by the king itself
@@ -38,7 +39,6 @@ public abstract class Figure {
      *  is that this ignores the opposite color king as a piece
      * */
     public abstract List<Position> controlSquares();
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

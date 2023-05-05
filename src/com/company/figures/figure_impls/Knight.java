@@ -1,8 +1,7 @@
-package com.company.figures.figur_impls;
+package com.company.figures.figure_impls;
 
-import com.company.core.BoardLetters;
 import com.company.core.Position;
-import com.company.core.exceptions.IllegalSquare;
+import com.company.core.exceptions.IllegalSquareException;
 import com.company.figures.Figure;
 
 import java.util.ArrayList;
@@ -30,31 +29,36 @@ public class Knight extends Figure {
         try {
             possibleMoves.add(new Position(position.x + 1, position.y - 2));
             System.out.println(new Position(position.x + 1, position.y - 2));
-        } catch (IllegalSquare ignored) {}
+        } catch (IllegalSquareException ignored) {}
         try {
             possibleMoves.add(new Position(position.x - 1, position.y - 2));
-        } catch (IllegalSquare ignored) {}
+        } catch (IllegalSquareException ignored) {}
         try {
             possibleMoves.add(new Position(position.x + 1, position.y + 2));
-        } catch (IllegalSquare ignored) {}
+        } catch (IllegalSquareException ignored) {}
         try {
             possibleMoves.add(new Position(position.x - 1, position.y + 2));
-        } catch (IllegalSquare ignored) {}
+        } catch (IllegalSquareException ignored) {}
         try {
             possibleMoves.add(new Position(position.x + 2, position.y + 1));
-        } catch (IllegalSquare ignored) {}
+        } catch (IllegalSquareException ignored) {}
         try {
             possibleMoves.add(new Position(position.x + 2, position.y - 1));
-        } catch (IllegalSquare ignored) {}
+        } catch (IllegalSquareException ignored) {}
         try {
             possibleMoves.add(new Position(position.x - 2, position.y + 1));
-        } catch (IllegalSquare ignored) {}
+        } catch (IllegalSquareException ignored) {}
         try {
             possibleMoves.add(new Position(position.x - 2, position.y - 1));
-        } catch (IllegalSquare ignored) {}
+        } catch (IllegalSquareException ignored) {}
 
         this.removeOccupiedCells(possibleMoves);
 
         return possibleMoves;
+    }
+
+    @Override
+    public List<Position> controlSquares() {
+        return this.possibleMoves();
     }
 }

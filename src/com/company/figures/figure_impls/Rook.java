@@ -1,7 +1,8 @@
-package com.company.figures.figur_impls;
+package com.company.figures.figure_impls;
 
 import com.company.Game;
 import com.company.core.Position;
+import com.company.figures.CombinedMovesCondition;
 import com.company.figures.Figure;
 
 import java.util.ArrayList;
@@ -21,9 +22,10 @@ public class Rook extends Figure {
         }
     }
 
-    @Override
-    public List<Position> possibleMoves() {
+
+    private List<Position> combinedMoves(CombinedMovesCondition condition) {
         List<Position> possibleMoves = new ArrayList<>();
+
 
         // right direction
         for(int x = position.x+1; x <= 8; x++) {
@@ -32,7 +34,7 @@ public class Rook extends Figure {
                 possibleMoves.add(new Position(x, position.y));
             } else if(figure.isWhite != isWhite){
                 possibleMoves.add(new Position(x, position.y));
-                break;
+                if(!condition.isEnemyKing(figure))break;
             }
             else break;
         }
@@ -43,7 +45,7 @@ public class Rook extends Figure {
                 possibleMoves.add(new Position(x, position.y));
             } else if(figure.isWhite != isWhite){
                 possibleMoves.add(new Position(x, position.y));
-                break;
+                if(!condition.isEnemyKing(figure))break;
             }
             else break;
         }
@@ -54,7 +56,7 @@ public class Rook extends Figure {
                 possibleMoves.add(new Position(position.x, y));
             } else if(figure.isWhite != isWhite){
                 possibleMoves.add(new Position(position.x, y));
-                break;
+                if(!condition.isEnemyKing(figure))break;
             }
             else break;
         }
@@ -65,11 +67,22 @@ public class Rook extends Figure {
                 possibleMoves.add(new Position(position.x, y));
             } else if(figure.isWhite != isWhite){
                 possibleMoves.add(new Position(position.x, y));
-                break;
+                if(!condition.isEnemyKing(figure))break;
             }
             else break;
         }
 
         return possibleMoves;
+    }
+
+    @Override
+    public List<Position> possibleMoves() {
+        return combinedMoves((Figure f) -> false);
+    }
+
+    @Override
+    public List<Position> controlSquares() {
+        // isWhite check is not necessarily needed
+        return combinedMoves((Figure f) -> (f.isWhite != this.isWhite && f instanceof King));
     }
 }

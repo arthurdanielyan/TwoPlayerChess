@@ -2,11 +2,11 @@ package com.company.core.exceptions;
 
 import com.company.core.Position;
 
-public class OccupiedSquare extends Exception {
+public class OccupiedSquareException extends Exception {
 
     private Position position;
 
-    public OccupiedSquare(Position position) {
+    public OccupiedSquareException(Position position) {
         this.position = position;
     }
 

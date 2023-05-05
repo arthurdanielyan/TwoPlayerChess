@@ -1,10 +1,13 @@
-package com.company.figures.figur_impls;
+package com.company.figures.figure_impls;
 
 import com.company.Game;
 import com.company.core.Position;
+import com.company.core.exceptions.OccupiedSquareException;
+import com.company.figures.CombinedMovesCondition;
 import com.company.figures.Figure;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Bishop extends Figure {
@@ -20,9 +23,30 @@ public class Bishop extends Figure {
         }
     }
 
-    @Override
-    public List<Position> possibleMoves() {
+
+    private List<Position> combinedMoves(CombinedMovesCondition condition) {
         List<Position> possibleMoves = new ArrayList<>();
+
+//        for(Figure f : Game.board.figures) { // checking for a discover check
+//            if(f.isWhite != this.isWhite) {
+//                Game.board.figures.remove(this);
+//                System.out.println(f);
+//                for(Position p : f.possibleMoves()) {
+//                    if(p == Game.board.getKing(this.isWhite).position) {
+//                        try {
+//                            Game.board.addFigure(this);
+//                        } catch (OccupiedSquareException ignore) {}
+//                        return Collections.emptyList();
+//                    }
+//                }
+//            }
+//        }
+
+        King myKing = Game.board.getKing(this.isWhite);
+        Figure queenCheck = new Queen(this.position, !isWhite);
+        Figure knightCheck = new Knight(this.position, !isWhite);
+        
+
 
         if(8 - position.x <= 8 - position.y) { // if closer to the right than to the top
             for (int i = 1; i <= 8 - position.x; i++) {
@@ -30,9 +54,9 @@ public class Bishop extends Figure {
                 Figure figure = Game.board.getFigureByPosition(currentPos);
                 if(figure == null) {
                     possibleMoves.add(currentPos);
-                } else if(figure.isWhite != isWhite){
+                } else if(figure.isWhite != isWhite) {
                     possibleMoves.add(currentPos);
-                    break;
+                    if(!condition.isEnemyKing(figure))break;
                 }
                 else break;
             }
@@ -44,7 +68,7 @@ public class Bishop extends Figure {
                     possibleMoves.add(currentPos);
                 } else if(figure.isWhite != isWhite){
                     possibleMoves.add(currentPos);
-                    break;
+                    if(!condition.isEnemyKing(figure))break;
                 }
                 else break;
             }
@@ -58,7 +82,7 @@ public class Bishop extends Figure {
                     possibleMoves.add(currentPos);
                 } else if(figure.isWhite != isWhite){
                     possibleMoves.add(currentPos);
-                    break;
+                    if(!condition.isEnemyKing(figure))break;
                 }
                 else break;
             }
@@ -70,7 +94,7 @@ public class Bishop extends Figure {
                     possibleMoves.add(currentPos);
                 } else if(figure.isWhite != isWhite){
                     possibleMoves.add(currentPos);
-                    break;
+                    if(!condition.isEnemyKing(figure))break;
                 }
                 else break;
             }
@@ -84,7 +108,7 @@ public class Bishop extends Figure {
                     possibleMoves.add(currentPos);
                 } else if(figure.isWhite != isWhite){
                     possibleMoves.add(currentPos);
-                    break;
+                    if(!condition.isEnemyKing(figure))break;
                 }
                 else break;
             }
@@ -96,7 +120,7 @@ public class Bishop extends Figure {
                     possibleMoves.add(currentPos);
                 } else if(figure.isWhite != isWhite){
                     possibleMoves.add(currentPos);
-                    break;
+                    if(!condition.isEnemyKing(figure))break;
                 }
                 else break;
             }
@@ -110,7 +134,7 @@ public class Bishop extends Figure {
                     possibleMoves.add(currentPos);
                 } else if(figure.isWhite != isWhite){
                     possibleMoves.add(currentPos);
-                    break;
+                    if(!condition.isEnemyKing(figure))break;
                 }
                 else break;
             }
@@ -122,12 +146,23 @@ public class Bishop extends Figure {
                     possibleMoves.add(currentPos);
                 } else if(figure.isWhite != isWhite){
                     possibleMoves.add(currentPos);
-                    break;
+                    if(!condition.isEnemyKing(figure))break;
                 }
                 else break;
             }
         }
 
         return possibleMoves;
+    }
+
+    @Override
+    public List<Position> possibleMoves() {
+        return combinedMoves((Figure f) -> false);
+    }
+
+    @Override
+    public List<Position> controlSquares() {
+        // isWhite check is not necessarily needed
+        return combinedMoves((Figure f) -> (f.isWhite != this.isWhite && f instanceof King));
     }
 }

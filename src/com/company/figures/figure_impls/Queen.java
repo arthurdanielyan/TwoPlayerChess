@@ -1,13 +1,10 @@
-package com.company.figures.figur_impls;
+package com.company.figures.figure_impls;
 
-import com.company.core.BoardLetters;
 import com.company.core.Position;
 import com.company.figures.Figure;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.company.core.BoardLetters.D;
 
 public class Queen extends Figure {
 
@@ -23,6 +20,7 @@ public class Queen extends Figure {
         }
     }
 
+
     @Override
     public List<Position> possibleMoves() {
 
@@ -33,6 +31,20 @@ public class Queen extends Figure {
         // diagonal moves
         Bishop diagonalMoves = new Bishop(this.position, this.isWhite);
         possibleMoves.addAll(diagonalMoves.possibleMoves());
+
+        return possibleMoves;
+    }
+
+    @Override
+    public List<Position> controlSquares() {
+
+        // straight moves
+        Rook straightMoves = new Rook(this.position, this.isWhite);
+        List<Position> possibleMoves = new ArrayList<>(straightMoves.controlSquares());
+
+        // diagonal moves
+        Bishop diagonalMoves = new Bishop(this.position, this.isWhite);
+        possibleMoves.addAll(diagonalMoves.controlSquares());
 
         return possibleMoves;
     }
