@@ -2,6 +2,11 @@ package com.company.figures;
 
 import com.company.Game;
 import com.company.core.Position;
+import com.company.core.exceptions.OccupiedSquareException;
+import com.company.figures.figure_impls.Bishop;
+import com.company.figures.figure_impls.King;
+import com.company.figures.figure_impls.Queen;
+import com.company.figures.figure_impls.Rook;
 
 import java.util.List;
 import java.util.Objects;
@@ -30,8 +35,9 @@ public abstract class Figure {
 
     public abstract List<Position> possibleMoves();
 
-    /** King should check controlled squares with this not with possibleMoves()
-     *  because some squares may be covered by the king itself
+    /** King should check controlled squares in order to exclude them
+     *  with this not with possibleMoves() because some squares may be
+     *  covered by the king itself
      *
      *  Example: Ke3, Re2
      *
@@ -39,6 +45,44 @@ public abstract class Figure {
      *  is that this ignores the opposite color king as a piece
      * */
     public abstract List<Position> controlSquares();
+
+    /**
+     * returns the Figure by which this is pinned, null if this isn't pinned
+     * */
+    public Figure isPinned() {
+        King myKing = Game.board.getKing(this.isWhite);
+        Bishop bishopCheck = new Bishop(myKing.position, isWhite);
+        Rook rookCheck = new Rook(myKing.position, isWhite);
+        Game.board.removeFigure(this);
+        for(Position p : bishopCheck.controlSquares()) {
+            Figure f = Game.board.getFigureByPosition(p);
+            if(f != null && f.isWhite != this.isWhite && (f instanceof Bishop || f instanceof Queen)) {
+                if(f instanceof Queen && f.position.x != myKing.position.x && f.position.y != myKing.position.y){
+                    try {
+                        Game.board.addFigure(this);
+                    } catch (OccupiedSquareException ignore) {
+                    }
+                    return f;
+                }
+                return f;
+            }
+        }
+        for(Position p : rookCheck.controlSquares()) {
+            Figure f = Game.board.getFigureByPosition(p);
+            if(f != null && f.isWhite != this.isWhite && (f instanceof Rook || f instanceof Queen)) {
+                if(f instanceof Queen && (f.position.x == myKing.position.x || f.position.y == myKing.position.y)) {
+                    try {
+                        Game.board.addFigure(this);
+                    } catch (OccupiedSquareException ignore) {}
+                    return f;
+                }
+                return f;
+            }
+        }
+        return null;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

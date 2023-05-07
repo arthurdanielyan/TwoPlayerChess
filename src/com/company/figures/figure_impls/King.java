@@ -3,7 +3,6 @@ package com.company.figures.figure_impls;
 import com.company.Game;
 import com.company.core.Position;
 import com.company.core.exceptions.IllegalSquareException;
-import com.company.figures.CombinedMovesCondition;
 import com.company.figures.Figure;
 
 import java.util.ArrayList;
@@ -21,11 +20,6 @@ public class King extends Figure {
             figureChar = '♔';
         }
     }
-
-//    @Override
-//    protected List<Position> combinedMoves(CombinedMovesCondition condition) {
-//        return null;
-//    }
 
     @Override
     public List<Position> possibleMoves() {

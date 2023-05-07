@@ -33,6 +33,17 @@ public class Board {
         }
     }
 
+    public void removeFigure(Figure figure) {
+        figures.remove(figure);
+        char squareColor;
+        if((figure.position.x+figure.position.y)%2 == 0) {
+            squareColor = '⬛';
+        } else {
+            squareColor = '⬜';
+        }
+        board[figure.position.y-1][figure.position.x-1] = squareColor;
+    }
+
     public boolean isEmpty(Position position) {
         return board[position.y-1][position.x-1] == '⬛' || board[position.y-1][position.x-1] == '⬜';
     }

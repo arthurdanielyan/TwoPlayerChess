@@ -2,9 +2,9 @@ package com.company.figures.figure_impls;
 
 import com.company.Game;
 import com.company.core.Position;
-import com.company.core.exceptions.OccupiedSquareException;
-import com.company.figures.CombinedMovesCondition;
+import com.company.figures.figure_helpers.CombinedMovesCondition;
 import com.company.figures.Figure;
+import com.company.figures.figure_helpers.MoveRestrictions;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,30 +24,11 @@ public class Bishop extends Figure {
     }
 
 
-    private List<Position> combinedMoves(CombinedMovesCondition condition) {
+    private List<Position> combinedMoves(CombinedMovesCondition condition, MoveRestrictions mr) {
         List<Position> possibleMoves = new ArrayList<>();
 
-//        for(Figure f : Game.board.figures) { // checking for a discover check
-//            if(f.isWhite != this.isWhite) {
-//                Game.board.figures.remove(this);
-//                System.out.println(f);
-//                for(Position p : f.possibleMoves()) {
-//                    if(p == Game.board.getKing(this.isWhite).position) {
-//                        try {
-//                            Game.board.addFigure(this);
-//                        } catch (OccupiedSquareException ignore) {}
-//                        return Collections.emptyList();
-//                    }
-//                }
-//            }
-//        }
 
-        King myKing = Game.board.getKing(this.isWhite);
-        Figure queenCheck = new Queen(this.position, !isWhite);
-        Figure knightCheck = new Knight(this.position, !isWhite);
-        
-
-
+        if(mr != MoveRestrictions.RTL_VER)
         if(8 - position.x <= 8 - position.y) { // if closer to the right than to the top
             for (int i = 1; i <= 8 - position.x; i++) {
                 Position currentPos = new Position(position.x + i, position.y + i);
@@ -74,6 +55,7 @@ public class Bishop extends Figure {
             }
         }
 
+        if(mr != MoveRestrictions.LTR_HOR)
         if(8 - position.x <= position.y-1) { // if closer to the right than to the bottom
             for (int i = 1; i <= 8 - position.x; i++) {
                 Position currentPos = new Position(position.x + i, position.y - i);
@@ -100,6 +82,7 @@ public class Bishop extends Figure {
             }
         }
 
+        if(mr != MoveRestrictions.LTR_HOR)
         if(position.x <= 8 - position.y) { // if closer to the left than to the top
             for (int i = 1; i < position.x; i++) {
                 Position currentPos = new Position(position.x - i, position.y + i);
@@ -126,6 +109,7 @@ public class Bishop extends Figure {
             }
         }
 
+        if(mr != MoveRestrictions.RTL_VER)
         if(position.x <= position.y) { // if closer to the left than to the bottom
             for (int i = 1; i < position.x; i++) {
                 Position currentPos = new Position(position.x - i, position.y - i);
@@ -157,12 +141,30 @@ public class Bishop extends Figure {
 
     @Override
     public List<Position> possibleMoves() {
-        return combinedMoves((Figure f) -> false);
+        if(isPinned() != null) {
+            Position pinner = isPinned().position;
+            if(pinner.x < this.position.x) { // pinner is at the right
+                if(pinner.y > this.position.y) {
+                    return combinedMoves((Figure f) -> false, MoveRestrictions.RTL_VER);
+                } else {
+                    return combinedMoves((Figure f) -> false, MoveRestrictions.LTR_HOR);
+                }
+            } else if (pinner.x > this.position.x) { // pinner is at the left
+                if(pinner.y > this.position.y) {
+                    return combinedMoves((Figure f) -> false, MoveRestrictions.LTR_HOR);
+                } else {
+                    return combinedMoves((Figure f) -> false, MoveRestrictions.RTL_VER);
+                }
+            }
+            return Collections.emptyList();
+        }
+
+        return combinedMoves((Figure f) -> false, MoveRestrictions.FREE);
     }
 
     @Override
     public List<Position> controlSquares() {
         // isWhite check is not necessarily needed
-        return combinedMoves((Figure f) -> (f.isWhite != this.isWhite && f instanceof King));
+        return combinedMoves((Figure f) -> (f.isWhite != this.isWhite && f instanceof King), MoveRestrictions.FREE);
     }
 }

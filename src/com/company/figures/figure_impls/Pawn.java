@@ -1,6 +1,8 @@
 package com.company.figures.figure_impls;
 
+import com.company.Game;
 import com.company.core.Position;
+import com.company.core.exceptions.IllegalSquareException;
 import com.company.figures.Figure;
 
 import java.util.ArrayList;
@@ -29,11 +31,73 @@ public class Pawn extends Figure {
             if(position.y == 2) {
                 possibleMoves.add(new Position(position.x, position.y + 2));
             }
+            try {
+                Figure rightTake = Game.board.getFigureByPosition(new Position(position.x + 1, position.y + 1));
+                if(rightTake != null) {
+                    possibleMoves.add(rightTake.position);
+                }
+            } catch (IllegalSquareException ignore) {}
+            try {
+                Figure leftTake = Game.board.getFigureByPosition(new Position(position.x - 1, position.y + 1));
+                if(leftTake != null) {
+                    possibleMoves.add(leftTake.position);
+                }
+            } catch (IllegalSquareException ignore) {}
         } else {
             if(position.y == 1) return possibleMoves;
             possibleMoves.add(new Position(position.x, position.y - 1));
             if(position.y == 7) {
                 possibleMoves.add(new Position(position.x, position.y - 2));
+            }
+            try {
+                Figure rightTake = Game.board.getFigureByPosition(new Position(position.x + 1, position.y - 1));
+                if(rightTake != null) {
+                    possibleMoves.add(rightTake.position);
+                }
+            } catch (IllegalSquareException ignore) {}
+            try {
+                Figure leftTake = Game.board.getFigureByPosition(new Position(position.x - 1, position.y - 1));
+                if(leftTake != null) {
+                    possibleMoves.add(leftTake.position);
+                }
+            } catch (IllegalSquareException ignore) {}
+        }
+
+
+        if(isPinned() != null) {
+            Figure pinner = isPinned();
+            if(isWhite) {
+                if (pinner.position.y > this.position.y && (pinner instanceof Rook || pinner instanceof Queen)) {
+                    possibleMoves.removeAll(controlSquares()); // if the pinner is above this then this can't take
+                } else {
+                    if(pinner.position.x > this.position.x) { // if the pinner is at the right then this can't take to left and also can't move
+                        possibleMoves.remove(new Position(position.x, position.y + 1));
+                        try {
+                            possibleMoves.remove(new Position(position.x - 1, position.y + 1));
+                        } catch (IllegalSquareException ignore) {}
+                    } else {
+                        possibleMoves.remove(new Position(position.x, position.y + 1));
+                        try {
+                            possibleMoves.remove(new Position(position.x + 1, position.y + 1));
+                        } catch (IllegalSquareException ignore) {}
+                    }
+                }
+            } else {
+                if (pinner.position.y < this.position.y && (pinner instanceof Rook || pinner instanceof Queen)) {
+                    possibleMoves.removeAll(controlSquares()); // if the pinner is below this then this can't take
+                } else {
+                    if(pinner.position.x > this.position.x) { // if the pinner is at the right then this can't take to left and can't move either
+                        possibleMoves.remove(new Position(position.x, position.y - 1));
+                        try {
+                            possibleMoves.remove(new Position(position.x - 1, position.y - 1));
+                        } catch (IllegalSquareException ignore) {}
+                    } else {
+                        possibleMoves.remove(new Position(position.x, position.y - 1));
+                        try {
+                            possibleMoves.remove(new Position(position.x + 1, position.y - 1));
+                        } catch (IllegalSquareException ignore) {}
+                    }
+                }
             }
         }
 
@@ -44,12 +108,24 @@ public class Pawn extends Figure {
     @Override
     public List<Position> controlSquares() {
         List<Position> controlCells = new ArrayList<>();
-        try{
-            controlCells.add(new Position(position.x+1, position.y+1));
-        } catch (IllegalArgumentException ignore) {}
-        try{
-            controlCells.add(new Position(position.x-1, position.y+1));
-        } catch (IllegalArgumentException ignore) {}
+        if(isWhite) {
+            try {
+                controlCells.add(new Position(position.x + 1, position.y + 1));
+            } catch (IllegalArgumentException ignore) {
+            }
+            try {
+                controlCells.add(new Position(position.x - 1, position.y + 1));
+            } catch (IllegalArgumentException ignore) {
+            }
+        } else {
+            try {
+                controlCells.add(new Position(position.x + 1, position.y - 1));
+            } catch (IllegalArgumentException ignore) {
+            }
+            try {
+                controlCells.add(new Position(position.x - 1, position.y - 1));
+            } catch (IllegalArgumentException ignore) {}
+        }
 
         return controlCells;
     }

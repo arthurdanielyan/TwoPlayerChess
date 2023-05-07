@@ -5,6 +5,7 @@ import com.company.core.exceptions.IllegalSquareException;
 import com.company.figures.Figure;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Knight extends Figure {
@@ -23,8 +24,12 @@ public class Knight extends Figure {
 
     @Override
     public List<Position> possibleMoves() {
-        List<Position> possibleMoves = new ArrayList<>();
 
+        if(isPinned() != null) {
+            return Collections.emptyList();
+        }
+
+        List<Position> possibleMoves = new ArrayList<>();
 
         try {
             possibleMoves.add(new Position(position.x + 1, position.y - 2));

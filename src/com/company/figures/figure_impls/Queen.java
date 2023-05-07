@@ -4,6 +4,7 @@ import com.company.core.Position;
 import com.company.figures.Figure;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Queen extends Figure {
@@ -23,6 +24,10 @@ public class Queen extends Figure {
 
     @Override
     public List<Position> possibleMoves() {
+
+        if(isPinned() != null) {
+            return Collections.emptyList();
+        }
 
         // straight moves
         Rook straightMoves = new Rook(this.position, this.isWhite);
