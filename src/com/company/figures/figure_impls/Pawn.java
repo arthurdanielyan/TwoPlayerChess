@@ -111,20 +111,20 @@ public class Pawn extends Figure {
         if(isWhite) {
             try {
                 controlCells.add(new Position(position.x + 1, position.y + 1));
-            } catch (IllegalArgumentException ignore) {
+            } catch (IllegalSquareException ignore) {
             }
             try {
                 controlCells.add(new Position(position.x - 1, position.y + 1));
-            } catch (IllegalArgumentException ignore) {
+            } catch (IllegalSquareException ignore) {
             }
         } else {
             try {
                 controlCells.add(new Position(position.x + 1, position.y - 1));
-            } catch (IllegalArgumentException ignore) {
+            } catch (IllegalSquareException ignore) {
             }
             try {
                 controlCells.add(new Position(position.x - 1, position.y - 1));
-            } catch (IllegalArgumentException ignore) {}
+            } catch (IllegalSquareException ignore) {}
         }
 
         return controlCells;

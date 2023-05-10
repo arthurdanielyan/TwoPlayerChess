@@ -37,7 +37,6 @@ public class Queen extends Figure {
 
     @Override
     public List<Position> controlSquares() {
-
         // straight moves
         Rook straightMoves = new Rook(this.position, this.isWhite);
         List<Position> possibleMoves = new ArrayList<>(straightMoves.controlSquares());
