@@ -24,11 +24,6 @@ public class Queen extends Figure {
 
     @Override
     public List<Position> possibleMoves() {
-
-        if(isPinned() != null) {
-            return Collections.emptyList();
-        }
-
         // straight moves
         Rook straightMoves = new Rook(this.position, this.isWhite);
         List<Position> possibleMoves = new ArrayList<>(straightMoves.possibleMoves());

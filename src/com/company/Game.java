@@ -11,12 +11,10 @@ public class Game {
     public static final Board board = new Board();
 
     public static void start() throws OccupiedSquareException {
-        Figure figure = new Pawn(new Position(BoardLetters.E, 4), false);
+        Figure figure = new Queen(new Position(BoardLetters.D, 5),true);
 
-        board.addFigure(new Bishop(new Position(BoardLetters.D, 3), true));
-        board.addFigure(new Knight(new Position(BoardLetters.F, 3), true));
-        board.addFigure(new Queen(new Position(BoardLetters.E, 1), true));
-        board.addFigure(new King(new Position(BoardLetters.E, 6), false));
+        board.addFigure(new Queen(new Position(BoardLetters.D, 7), false));
+        board.addFigure(new King(new Position(BoardLetters.D, 2), true));
         board.addFigure(figure);
 
 
