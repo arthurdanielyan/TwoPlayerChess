@@ -13,28 +13,11 @@ public class Position {
 
     public Position(int x, int y) {
         if(!isLegalSquare(x) || !isLegalSquare(y)) {
-            throw new IllegalSquareException(this);
+            throw new IllegalSquareException(x, y);
         }
 
         this.x = x;
         this.y = y;
-    }
-
-    public char getFile() {
-        char file;
-        switch (x) { // chatGPT
-            case 1 -> file = 'a';
-            case 2 -> file = 'b';
-            case 3 -> file = 'c';
-            case 4 -> file = 'd';
-            case 5 -> file = 'e';
-            case 6 -> file = 'f';
-            case 7 -> file = 'g';
-            case 8 -> file = 'h';
-            default -> file = 'w';
-        }
-
-        return file;
     }
 
     @Override

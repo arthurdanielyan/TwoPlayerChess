@@ -58,11 +58,12 @@ public class Board {
     }
 
 
-    public List<Figure> getFigure(Class<? extends Figure> figureType, boolean isWhite) {
-        List<Figure> reqFigures = new ArrayList<>();
+    @SuppressWarnings("unchecked")
+    public <T extends Figure> List<T> getFigures(Class<T> figureType, boolean isWhite) {
+        List<T> reqFigures = new ArrayList<>();
         for(Figure f : this.figures) {
             if(f.isWhite == isWhite && f.getClass().equals(figureType)) {
-                reqFigures.add(f);
+                reqFigures.add((T) f);
             }
         }
 

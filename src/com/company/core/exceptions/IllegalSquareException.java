@@ -1,31 +1,32 @@
 package com.company.core.exceptions;
 
-import com.company.core.Position;
 
 public class IllegalSquareException extends IndexOutOfBoundsException {
 
-    private Position position;
+    private final int x;
+    private final int y;
 
-    public IllegalSquareException(Position position) {
-        this.position = position;
+    public IllegalSquareException(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
 
     @Override
     public String getMessage() {
         boolean illegalX = false;
         boolean illegalY = false;
-        if(position.x > 8 || position.x < 1) {
+        if(x > 8 || x < 1) {
             illegalX = true;
         }
-        if(position.y > 8 || position.y < 1) {
+        if(y > 8 || y < 1) {
             illegalY = true;
         }
         if(illegalX && illegalY) {
-            return "x and y of Position must be in range of [0, 8]";
+            return "x and y of Position must be in range of [0, 8], but is " + x + ", " + y;
         }
         if(illegalX) {
-            return "x of Position must be in range of [0, 8]";
+            return "x of Position must be in range of [0, 8], but is " + x;
         }
-        return "y of Position must be in range of [0, 8]";
+        return "y of Position must be in range of [0, 8], but is " + y;
     }
 }

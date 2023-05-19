@@ -1,6 +1,7 @@
 package com.company.figures;
 
 import com.company.Game;
+import com.company.core.MoveInfo;
 import com.company.core.Position;
 import com.company.core.exceptions.OccupiedSquareException;
 import com.company.figures.figure_impls.Bishop;
@@ -32,6 +33,17 @@ public abstract class Figure {
         });
     }
 
+    public MoveInfo move(Position newPosition) {
+        if(possibleMoves().contains(newPosition)) {
+            boolean isCapture = false;
+            if(Game.board.getFigureByPosition(newPosition) != null) {
+                isCapture = true;
+            }
+            return new MoveInfo(newPosition, isCapture, true);
+        }
+        return new MoveInfo(newPosition, false, false);
+    }
+
 
     public abstract List<Position> possibleMoves();
 
@@ -42,7 +54,8 @@ public abstract class Figure {
      *  Example: Ke3, Re2
      *
      *  The only difference between implementations of this and possibleMoves()
-     *  is that this ignores the opposite color king as a piece
+     *  is that this ignores the opposite color king as a piece, and doesn't
+     *  care whether the piece is pinned
      * */
     public abstract List<Position> controlSquares();
 
@@ -60,10 +73,11 @@ public abstract class Figure {
                 if(f instanceof Queen && f.position.x != myKing.position.x && f.position.y != myKing.position.y){
                     try {
                         Game.board.addFigure(this);
-                    } catch (OccupiedSquareException ignore) {
-                    }
+                    } catch (OccupiedSquareException ignore) {}
+                    if(f.controlSquares().contains(this.position))
                     return f;
                 }
+                if(f.controlSquares().contains(this.position))
                 return f;
             }
         }
@@ -74,8 +88,10 @@ public abstract class Figure {
                     try {
                         Game.board.addFigure(this);
                     } catch (OccupiedSquareException ignore) {}
+                    if(f.controlSquares().contains(this.position))
                     return f;
                 }
+                if(f.controlSquares().contains(this.position))
                 return f;
             }
         }

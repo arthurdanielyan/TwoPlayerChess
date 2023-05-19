@@ -158,6 +158,11 @@ public class Bishop extends Figure {
             }
             return Collections.emptyList();
         }
+        if(!Game.board.getKing(this.isWhite).checkers().isEmpty()) { // if the King is under a check;
+            List<Position> possibleMoves = Game.board.getKing(this.isWhite).possibleCovers();
+            possibleMoves.retainAll(this.combinedMoves((Figure f) -> false, MoveRestrictions.FREE));
+            return possibleMoves;
+        }
 
         return combinedMoves((Figure f) -> false, MoveRestrictions.FREE);
     }
