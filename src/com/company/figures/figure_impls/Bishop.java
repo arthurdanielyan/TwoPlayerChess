@@ -1,6 +1,6 @@
 package com.company.figures.figure_impls;
 
-import com.company.Game;
+import com.company.game.Game;
 import com.company.core.Position;
 import com.company.figures.figure_helpers.CombinedMovesCondition;
 import com.company.figures.Figure;

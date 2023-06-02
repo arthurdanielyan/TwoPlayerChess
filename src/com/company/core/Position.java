@@ -8,8 +8,8 @@ import static com.company.core.Extensions.isLegalSquare;
 
 public class Position {
 
-    public int y; /** letters on the board */
-    public int x; /** numbers on the board */
+    public int y; /** numbers on the board */
+    public int x; /** letters on the board */
 
     public Position(int x, int y) {
         if(!isLegalSquare(x) || !isLegalSquare(y)) {

@@ -1,6 +1,8 @@
 package com.company.figures.figure_impls;
 
-import com.company.Game;
+import com.company.game.Game;
+import com.company.core.BoardLetters;
+import com.company.core.MoveInfo;
 import com.company.core.Position;
 import com.company.figures.figure_helpers.CombinedMovesCondition;
 import com.company.figures.Figure;
@@ -12,6 +14,7 @@ import java.util.List;
 
 public class Rook extends Figure {
 
+    boolean castleable = true;
 
     public Rook(Position position, boolean isWhite) {
         super(position, isWhite);
@@ -24,6 +27,33 @@ public class Rook extends Figure {
         }
     }
 
+    public MoveInfo castle(boolean shortSide) {
+        if(!castleable) {
+            return new MoveInfo(null, false, false);
+        }
+        castleable = false;
+        if(shortSide) {
+            if(isWhite) {
+                position = new Position(BoardLetters.F, 1);
+            } else {
+                position = new Position(BoardLetters.F, 8);
+            }
+            return new MoveInfo(position, false, true);
+        } else {
+            if(isWhite) {
+                position = new Position(BoardLetters.D, 1);
+            } else {
+                position = new Position(BoardLetters.D, 8);
+            }
+            return new MoveInfo(position, false, true);
+        }
+    }
+
+    @Override
+    public MoveInfo move(Position newPosition) {
+        castleable = false;
+        return super.move(newPosition);
+    }
 
     private List<Position> combinedMoves(CombinedMovesCondition condition, MoveRestrictions mr) {
         List<Position> possibleMoves = new ArrayList<>();

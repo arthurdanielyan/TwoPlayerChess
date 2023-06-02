@@ -1,13 +1,19 @@
 package com.company.figures.figure_impls;
 
-import com.company.Game;
+import com.company.game.Game;
+import com.company.core.BoardLetters;
+import com.company.core.MoveInfo;
 import com.company.core.Position;
 import com.company.core.exceptions.IllegalSquareException;
 import com.company.figures.Figure;
 
 import java.util.*;
 
+import static com.company.core.BoardLetters.*;
+
 public class King extends Figure {
+
+    private boolean castleable = true;
 
     public King(Position position, boolean isWhite) {
         super(position, isWhite);
@@ -18,6 +24,62 @@ public class King extends Figure {
         else {
             figureChar = '♔';
         }
+    }
+
+    public MoveInfo castle(boolean shortSide) {
+        if(!castleable) return new MoveInfo(null, false, false);
+        if(shortSide) {
+            if(isWhite) {
+                if(Game.board.getFigureByPosition(new Position(F, 1)) == null && Game.board.getFigureByPosition(new Position(BoardLetters.G, 1)) == null) {
+                    Figure rook = Game.board.getFigureByPosition(new Position(H, 1));
+                    if(rook == null) return new MoveInfo(null, false, false);
+                    MoveInfo isRookCastleable = ((Rook) rook).castle(true);
+                    if(isRookCastleable.isLegal()) {
+                        position = new Position(G, 1);
+                        return new MoveInfo(position, false, true);
+                    }
+                }
+            } else {
+                if(Game.board.getFigureByPosition(new Position(F, 8)) == null && Game.board.getFigureByPosition(new Position(BoardLetters.G, 8)) == null) {
+                    Figure rook = Game.board.getFigureByPosition(new Position(H, 8));
+                    if(rook == null) return new MoveInfo(null, false, false);
+                    MoveInfo isRookCastleable = ((Rook) rook).castle(true);
+                    if(isRookCastleable.isLegal()) {
+                        position = new Position(G, 8);
+                        return new MoveInfo(position, false, true);
+                    }
+                }
+            }
+        } else {
+            if(isWhite) {
+                if (Game.board.getFigureByPosition(new Position(B, 1)) == null && Game.board.getFigureByPosition(new Position(C, 1)) == null && Game.board.getFigureByPosition(new Position(D, 1)) == null) {
+                    Figure rook = Game.board.getFigureByPosition(new Position(A, 1));
+                    if (rook == null) return new MoveInfo(null, false, false);
+                    MoveInfo isRookCastleable = ((Rook) rook).castle(false);
+                    if (isRookCastleable.isLegal()) {
+                        position = new Position(C, 1);
+                        return new MoveInfo(position, false, true);
+                    }
+                }
+            } else {
+                if (Game.board.getFigureByPosition(new Position(B, 8)) == null && Game.board.getFigureByPosition(new Position(C, 8)) == null && Game.board.getFigureByPosition(new Position(D, 8)) == null) {
+                    Figure rook = Game.board.getFigureByPosition(new Position(A, 1));
+                    if (rook == null) return new MoveInfo(null, false, false);
+                    MoveInfo isRookCastleable = ((Rook) rook).castle(false);
+                    if (isRookCastleable.isLegal()) {
+                        position = new Position(C, 1);
+                        return new MoveInfo(position, false, true);
+                    }
+                }
+            }
+        }
+        return new MoveInfo(null, false, false);
+    }
+
+    @Override
+    public MoveInfo move(Position newPosition) {
+        castleable = false;
+        return super.move(newPosition);
     }
 
     @Override

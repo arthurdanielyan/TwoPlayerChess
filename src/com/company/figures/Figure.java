@@ -1,13 +1,10 @@
 package com.company.figures;
 
-import com.company.Game;
+import com.company.figures.figure_impls.*;
+import com.company.game.Game;
 import com.company.core.MoveInfo;
 import com.company.core.Position;
 import com.company.core.exceptions.OccupiedSquareException;
-import com.company.figures.figure_impls.Bishop;
-import com.company.figures.figure_impls.King;
-import com.company.figures.figure_impls.Queen;
-import com.company.figures.figure_impls.Rook;
 
 import java.util.List;
 import java.util.Objects;
@@ -36,9 +33,22 @@ public abstract class Figure {
     public MoveInfo move(Position newPosition) {
         if(possibleMoves().contains(newPosition)) {
             boolean isCapture = false;
-            if(Game.board.getFigureByPosition(newPosition) != null) {
+            Figure victim = Game.board.getFigureByPosition(newPosition);
+            if(victim != null) {
                 isCapture = true;
+                Game.board.removeFigure(victim);
             }
+            if(this instanceof Pawn) {
+
+                if(((Pawn) this).enPassanter && newPosition.x != position.x && victim == null) {
+                    // at this point it is known that an En Passant is being taken
+                    ((Pawn) this).enPassanter = false;
+                    Game.board.removeFigure(Game.board.getFigureByPosition(new Position(newPosition.x, position.y)));
+                    isCapture = true;
+                }
+            }
+            position = newPosition;
+            Game.board.onMove(this);
             return new MoveInfo(newPosition, isCapture, true);
         }
         return new MoveInfo(newPosition, false, false);
@@ -95,6 +105,9 @@ public abstract class Figure {
                 return f;
             }
         }
+        try {
+            Game.board.addFigure(this);
+        } catch (OccupiedSquareException ignore) {}
         return null;
     }
 
