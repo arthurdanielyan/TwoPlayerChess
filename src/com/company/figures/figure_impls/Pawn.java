@@ -1,6 +1,5 @@
 package com.company.figures.figure_impls;
 
-import com.company.core.MoveInfo;
 import com.company.game.Game;
 import com.company.core.Position;
 import com.company.core.exceptions.IllegalSquareException;
@@ -68,6 +67,25 @@ public class Pawn extends Figure {
                 }
             } catch (IllegalSquareException ignore) {}
         } else {
+            if(enPassanter) {
+                Pawn passantable1 = null;
+                Pawn passantable2 = null;
+                try {
+                    passantable1 = (Pawn) Game.board.getFigureByPosition(new Position(position.x + 1, position.y));
+                } catch (Exception ignore) {} // either ClassCast or IllegalSquare
+                try {
+                    passantable2 = (Pawn) Game.board.getFigureByPosition(new Position(position.x - 1, position.y));
+                } catch (Exception ignore) {} // either ClassCast or IllegalSquare
+
+
+                if(passantable1 != null && passantable1.enPassantable) {
+                    possibleMoves.add(new Position(passantable1.position.x, position.y-1));
+                }
+                if(passantable2 != null && passantable2.enPassantable) {
+                    possibleMoves.add(new Position(passantable2.position.x, position.y-1));
+                }
+            }
+
             if(position.y == 1) return possibleMoves;
             possibleMoves.add(new Position(position.x, position.y - 1));
             if(position.y == 7) {

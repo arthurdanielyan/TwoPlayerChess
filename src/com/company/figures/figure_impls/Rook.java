@@ -38,15 +38,14 @@ public class Rook extends Figure {
             } else {
                 position = new Position(BoardLetters.F, 8);
             }
-            return new MoveInfo(position, false, true);
         } else {
             if(isWhite) {
                 position = new Position(BoardLetters.D, 1);
             } else {
                 position = new Position(BoardLetters.D, 8);
             }
-            return new MoveInfo(position, false, true);
         }
+        return new MoveInfo(position, false, true);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.company.core;
 
 public record MoveInfo(
-        Position position,
+        Position newPosition,
         boolean isCapture,
         boolean isLegal
 ){}

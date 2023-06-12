@@ -32,6 +32,7 @@ public abstract class Figure {
 
     public MoveInfo move(Position newPosition) {
         if(possibleMoves().contains(newPosition)) {
+            Position oldPosition = position;
             boolean isCapture = false;
             Figure victim = Game.board.getFigureByPosition(newPosition);
             if(victim != null) {
@@ -48,7 +49,7 @@ public abstract class Figure {
                 }
             }
             position = newPosition;
-            Game.board.onMove(this);
+            Game.board.onMove(this, oldPosition);
             return new MoveInfo(newPosition, isCapture, true);
         }
         return new MoveInfo(newPosition, false, false);

@@ -62,7 +62,7 @@ public class MoveReader {
 
             return !figure.possibleMoves().contains(new Position(x, y));
         });
-        // foundFigures at this point contains requested figures that can be moved to the requested position
+        // foundFigures at this point contains requested figures that can be moved to the requested newPosition
 
         if(foundFigures.size() > 1) {
             if(!(foundFigures.get(0) instanceof Pawn)) {
@@ -79,7 +79,7 @@ public class MoveReader {
                         foundFigures.removeIf((figure -> figure.position.x != departureFile));
                         foundFigures.get(0).move(destination);
                     }
-                } else { // full departure position is needed
+                } else { // full departure newPosition is needed
 
                 }
             }

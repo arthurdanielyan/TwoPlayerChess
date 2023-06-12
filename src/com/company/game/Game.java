@@ -15,11 +15,12 @@ public class Game {
         board.resetBoard();
         board.render();
 
-        board.getFigureByPosition(new Position(E, 2)).move(new Position(E, 4));
-        board.getFigureByPosition(new Position(D, 7)).move(new Position(D, 6));
-        board.getFigureByPosition(new Position(E, 4)).move(new Position(E, 5));
-        board.getFigureByPosition(new Position(D, 6)).move(new Position(D, 5));
-        board.getFigureByPosition(new Position(E, 5)).move(new Position(D, 6));
+        board.getFigureByPosition(new Position(D, 2)).move(new Position(D, 4));
+        board.getFigureByPosition(new Position(E, 7)).move(new Position(E, 5));
+        board.getFigureByPosition(new Position(E, 2)).move(new Position(E, 3));
+        board.getFigureByPosition(new Position(E, 5)).move(new Position(E, 4));
+        board.getFigureByPosition(new Position(F, 2)).move(new Position(F, 4));
+        board.getFigureByPosition(new Position(E, 4)).move(new Position(F, 3));
 
     }
 }

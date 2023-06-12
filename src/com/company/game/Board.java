@@ -22,16 +22,16 @@ public class Board {
         }
     }
 
-    public void onMove(Figure figure) {
+    public void onMove(Figure figure, Position oldPosition) {
         if(enPassantablePawn != null) enPassantablePawn.enPassantable = false;
         if (figure instanceof Pawn) {
             if(figure.isWhite) {
-                if(figure.position.y == 4) {
+                if(figure.position.y == 4 && oldPosition.y == 2) {
                     enPassantablePawn = (Pawn) figure;
                     ((Pawn) figure).enPassantable = true;
                 } else ((Pawn) figure).enPassanter = figure.position.y == 5;
             } else {
-                if(figure.position.y == 5) {
+                if(figure.position.y == 5  && oldPosition.y == 7) {
                     enPassantablePawn = (Pawn) figure;
                     ((Pawn) figure).enPassantable = true;
                 } else ((Pawn) figure).enPassanter = figure.position.y == 4;
