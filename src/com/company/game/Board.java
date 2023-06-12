@@ -158,7 +158,6 @@ public class Board {
     }
 
     public void render() {
-        System.out.println();
         for(int y = 8; y >= 1; y--){
             for(int x = 1; x <= 8; x++){
                 Figure f = getFigureByPosition(new Position(x, y));

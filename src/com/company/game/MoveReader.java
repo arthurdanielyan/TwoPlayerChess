@@ -1,12 +1,17 @@
 package com.company.game;
 
-import com.company.core.BoardLetters;
+import com.company.core.Extensions;
 import com.company.core.Position;
 import com.company.figures.Figure;
 import com.company.figures.figure_impls.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
 import java.util.function.Predicate;
+
+import static com.company.core.Extensions.isLegalSquare;
 
 public class MoveReader {
 
@@ -23,7 +28,9 @@ public class MoveReader {
         String moveOf;
         if(this.moveOfWhite) moveOf = "White";
         else moveOf = "Black";
+        System.out.println();
         System.out.println(moveOf + " to move, enter the move");
+        board.render();
 
         Scanner input = new Scanner(System.in);
         readMove(input.next());
@@ -31,8 +38,18 @@ public class MoveReader {
     }
 
     public void readMove(String moveReq) {
-        char figureToMoveLetter = moveReq.charAt(0);
+        char figureToMoveLetter = moveReq.charAt(0); // doesn't consider pawn promotions and castles
         List<? extends Figure> foundFigures = new ArrayList<>();
+
+        final String destinationSquareString = moveReq.substring(moveReq.length() - 2);
+        Position destination = null;
+        try {
+            destination = Position.toPosition(destinationSquareString);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Couldn't resolve move");
+            requestMove();
+        }
+
         if(figureLetters.contains(figureToMoveLetter)) {
             switch (figureToMoveLetter) {
                 case 'K' -> foundFigures = board.getFigures(King.class, moveOfWhite);
@@ -41,58 +58,74 @@ public class MoveReader {
                 case 'N' -> foundFigures = board.getFigures(Knight.class, moveOfWhite);
                 case 'R' -> foundFigures = board.getFigures(Rook.class, moveOfWhite);
             }
-        } else if(isFile(figureToMoveLetter)){ // a to h
+        } else if(xOfFile(figureToMoveLetter) > 0){ // a to h
             foundFigures = board.getFigures(Pawn.class, moveOfWhite);
-        } else System.out.println("Couldn't resolve move");
+            foundFigures.removeIf((Predicate<Figure>) figure -> (figure.position.x != xOfFile(figureToMoveLetter)) || figure.isWhite != moveOfWhite);
+        } else {
+            System.out.println("Couldn't resolve move");
+            requestMove();
+        }
+        final Position finalDestination = destination;
+        foundFigures.removeIf((Predicate<Figure>) figure -> (!figure.possibleMoves().contains(finalDestination)));
 
-        final boolean[] pawnPromotion = {false};
 
 
-        final String destinationSquareString = moveReq.substring(moveReq.length() - 2);
-        foundFigures.removeIf((Predicate<Figure>) figure -> {
-            if(figure instanceof Pawn && figure.position.y == 7) {
-                pawnPromotion[0] = true;
-                int x = BoardLetters.fileNumber(destinationSquareString.charAt(0));
-                int y = Character.getNumericValue(moveReq.charAt(1));
-
-                return !figure.possibleMoves().contains(new Position(x, y));
+        if(foundFigures.size() == 1) {
+            if(board.getFigureByPosition(destination) != null && moveReq.charAt(moveReq.length()-3) != 'x'){
+                System.out.println("Couldn't resolve move, did you mean " + moveReq.substring(0, moveReq.length()-2) + "x" + destinationSquareString);
+                requestMove();
             }
-            int x = BoardLetters.fileNumber(destinationSquareString.charAt(0));
-            int y = Character.getNumericValue(destinationSquareString.charAt(1));
-
-            return !figure.possibleMoves().contains(new Position(x, y));
-        });
-        // foundFigures at this point contains requested figures that can be moved to the requested newPosition
-
-        if(foundFigures.size() > 1) {
-            if(!(foundFigures.get(0) instanceof Pawn)) {
-                int destinationX = Character.getNumericValue(destinationSquareString.charAt(0));
-                int destinationY = Character.getNumericValue(destinationSquareString.charAt(1));
-                Position destination = new Position(destinationX, destinationY);
-                if (foundFigures.size() == 2) { // one departure point is needed
-                    if (foundFigures.get(0).position.x == foundFigures.get(1).position.x) {
-                        int departureRank = Character.getNumericValue(moveReq.charAt(1));
-                        foundFigures.removeIf((figure -> figure.position.y != departureRank));
-                        foundFigures.get(0).move(destination);
-                    } else {
-                        int departureFile = Character.getNumericValue(moveReq.charAt(1));
-                        foundFigures.removeIf((figure -> figure.position.x != departureFile));
-                        foundFigures.get(0).move(destination);
+            foundFigures.get(0).move(Position.toPosition(destinationSquareString));
+        } else if(foundFigures.size() == 0) {
+            System.out.println("Impossible move, try again");
+            requestMove();
+        } else {
+            StringBuilder moveReqCopy = new StringBuilder(moveReq);
+            moveReqCopy.deleteCharAt(0);
+            moveReqCopy.deleteCharAt(moveReqCopy.length()-1);
+            moveReqCopy.deleteCharAt(moveReqCopy.length()-1);
+            moveReqCopy = new StringBuilder(moveReqCopy.toString().replace("x", ""));
+            // now the destination the figure character (or a pawn's file) and the takes (if there was) mark are removed from the move query
+            if(moveReqCopy.length() == 0) {
+                System.out.println("Couldn't identify the piece as multiple pieces can go to the specified square");
+                requestMove();
+            }
+            final String identifier = moveReqCopy.toString();
+            foundFigures.removeIf((figure -> {
+                if(identifier.length() == 1) {
+                    if(xOfFile(identifier.charAt(0)) > 0) {
+                        return figure.position.x != xOfFile(identifier.charAt(0));
+                    } else if(isLegalSquare(Integer.parseInt(identifier))) {
+                        return figure.position.y != Integer.parseInt(identifier);
                     }
-                } else { // full departure newPosition is needed
-
                 }
+                return false;
+            }));
+            if (foundFigures.size() != 1) {
+                System.out.println("Couldn't identify the piece as multiple pieces can go to the specified square");
+                requestMove();
+            } else {
+                foundFigures.get(0).move(destination);
             }
         }
-
-        System.out.println(foundFigures);
-        board.render();
-
+        moveOfWhite = !moveOfWhite;
+        requestMove();
     }
 
+    /**
+     * Undone things
+     * 1. add the case where both the file and the rank is specified
+     * 2. add castles
+     * 3. add pawn promotion
+     *  
+     * */
 
-    private static boolean isFile(char c) {
-        return (c >= 97 && c <= 104);
+
+    private static int xOfFile(char c) {
+        if (c >= 97 && c <= 104) {
+            return c-96;
+        }
+        return -1;
     }
 
     private static <T> boolean containsAny(List<T> container, List<T> elements) {

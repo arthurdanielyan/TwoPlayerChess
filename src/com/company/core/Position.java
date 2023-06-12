@@ -50,4 +50,23 @@ public class Position {
     public int hashCode() {
         return Objects.hash(y, x);
     }
+
+    public static Position toPosition(String square) throws IllegalArgumentException {
+        if(square.length() > 2) throw new IllegalArgumentException("Provided string " + square + " doesn't represent any square");
+        int x;
+        switch(square.charAt(0)) {
+            case 'a' -> x = 1;
+            case 'b' -> x = 2;
+            case 'c' -> x = 3;
+            case 'd' -> x = 4;
+            case 'e' -> x = 5;
+            case 'f' -> x = 6;
+            case 'g' -> x = 7;
+            case 'h' -> x = 8;
+            default -> throw new IllegalArgumentException("Provided string " + square + " doesn't represent any square");
+        }
+
+
+        return new Position(x, Character.getNumericValue(square.charAt(1)));
+    }
 }

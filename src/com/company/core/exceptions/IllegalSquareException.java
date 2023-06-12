@@ -6,6 +6,7 @@ public class IllegalSquareException extends IndexOutOfBoundsException {
     private final int x;
     private final int y;
 
+
     public IllegalSquareException(int x, int y) {
         this.x = x;
         this.y = y;
