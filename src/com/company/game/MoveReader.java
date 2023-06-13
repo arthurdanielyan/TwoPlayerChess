@@ -1,6 +1,5 @@
 package com.company.game;
 
-import com.company.core.Extensions;
 import com.company.core.Position;
 import com.company.figures.Figure;
 import com.company.figures.figure_impls.*;
@@ -38,16 +37,30 @@ public class MoveReader {
     }
 
     public void readMove(String moveReq) {
-        char figureToMoveLetter = moveReq.charAt(0); // doesn't consider pawn promotions and castles
+        char figureToMoveLetter = moveReq.charAt(0); // doesn't consider castles and pawn promotions
         List<? extends Figure> foundFigures = new ArrayList<>();
 
-        final String destinationSquareString = moveReq.substring(moveReq.length() - 2);
+        boolean pawnPromotion = false;
+
+        String destinationSquareString = moveReq.substring(moveReq.length() - 2);
         Position destination = null;
         try {
             destination = Position.toPosition(destinationSquareString);
         } catch (IllegalArgumentException e) {
-            System.out.println("Couldn't resolve move");
-            requestMove();
+            if(moveReq.charAt(moveReq.length()-2) != '=') {
+                System.out.println("Couldn't resolve move");
+                requestMove();
+            } else {
+                destinationSquareString = moveReq.substring(moveReq.length() - 4, moveReq.length() - 2);
+                try {
+                    destination = Position.toPosition(destinationSquareString);
+                    if((moveOfWhite && destination.y == 8) || (!moveOfWhite && destination.y == 1))
+                    pawnPromotion = true;
+                } catch (IllegalArgumentException e1) {
+                    System.out.println("Couldn't resolve move");
+                    requestMove();
+                }
+            }
         }
 
         if(figureLetters.contains(figureToMoveLetter)) {
@@ -69,24 +82,51 @@ public class MoveReader {
         foundFigures.removeIf((Predicate<Figure>) figure -> (!figure.possibleMoves().contains(finalDestination)));
 
 
+        if(pawnPromotion) {
+            Figure mover = foundFigures.get(0);
+            if(mover instanceof Pawn) {
+                if((mover.isWhite && destination.y == 8) || (!mover.isWhite && destination.y == 1)) {
+                    Class<? extends Figure> promoteTo;
+                    switch (moveReq.charAt(moveReq.length()-1)) {
+                        case 'Q' -> promoteTo = Queen.class;
+                        case 'B' -> promoteTo = Bishop.class;
+                        case 'N' -> promoteTo = Knight.class;
+                        case 'R' -> promoteTo = Rook.class;
+                        default -> {
+                            System.out.println("Couldn't resolve move");
+                            promoteTo = Pawn.class;
+                            requestMove();
+                        }
+                    }
+                    if(((Pawn) mover).promote(promoteTo, destination)) {
+                        System.out.println("Couldn't resolve move");
+                    }
+                    requestMove();
+                }
+            }
+        }
 
-        if(foundFigures.size() == 1) {
+
+        /*if(foundFigures.size() == 1) {
             if(board.getFigureByPosition(destination) != null && moveReq.charAt(moveReq.length()-3) != 'x'){
                 System.out.println("Couldn't resolve move, did you mean " + moveReq.substring(0, moveReq.length()-2) + "x" + destinationSquareString);
                 requestMove();
             }
             foundFigures.get(0).move(Position.toPosition(destinationSquareString));
-        } else if(foundFigures.size() == 0) {
+        }
+        else */if(foundFigures.size() == 0) {
             System.out.println("Impossible move, try again");
             requestMove();
         } else {
             StringBuilder moveReqCopy = new StringBuilder(moveReq);
             moveReqCopy.deleteCharAt(0);
             moveReqCopy.deleteCharAt(moveReqCopy.length()-1);
-            moveReqCopy.deleteCharAt(moveReqCopy.length()-1);
+            try {
+                moveReqCopy.deleteCharAt(moveReqCopy.length() - 1);
+            } catch (StringIndexOutOfBoundsException ignore) {}
             moveReqCopy = new StringBuilder(moveReqCopy.toString().replace("x", ""));
             // now the destination the figure character (or a pawn's file) and the takes (if there was) mark are removed from the move query
-            if(moveReqCopy.length() == 0) {
+            if(moveReqCopy.length() == 0 && foundFigures.size() > 1) {
                 System.out.println("Couldn't identify the piece as multiple pieces can go to the specified square");
                 requestMove();
             }
@@ -98,13 +138,28 @@ public class MoveReader {
                     } else if(isLegalSquare(Integer.parseInt(identifier))) {
                         return figure.position.y != Integer.parseInt(identifier);
                     }
+                } else if(identifier.length() == 2) { // could be 0
+                    int file = xOfFile(identifier.charAt(0));
+                    int rank = Character.getNumericValue(identifier.charAt(1));
+                    return !figure.position.equals(new Position(file, rank));
                 }
                 return false;
             }));
-            if (foundFigures.size() != 1) {
+
+            if (foundFigures.size() > 1) {
                 System.out.println("Couldn't identify the piece as multiple pieces can go to the specified square");
                 requestMove();
+            } else if(foundFigures.size() == 0) { // happens after something like g7=Q
+                System.out.println("Impossible move, try again");
+                requestMove();
             } else {
+                Figure mover = foundFigures.get(0);
+                if(mover instanceof Pawn) {
+                    if((mover.isWhite && destination.y == 8) || (!mover.isWhite && destination.y == 1)) {
+                        System.out.println("Specify the piece which the pawn should promote to");
+                        requestMove();
+                    }
+                }
                 foundFigures.get(0).move(destination);
             }
         }
@@ -114,10 +169,8 @@ public class MoveReader {
 
     /**
      * Undone things
-     * 1. add the case where both the file and the rank is specified
-     * 2. add castles
-     * 3. add pawn promotion
-     *  
+     * 1. add castles
+     *
      * */
 
 

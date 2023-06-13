@@ -4,10 +4,10 @@ package com.company.game;
 import com.company.core.Position;
 import com.company.core.exceptions.OccupiedSquareException;
 import com.company.figures.figure_impls.King;
-import com.company.figures.figure_impls.Queen;
+import com.company.figures.figure_impls.Knight;
+import com.company.figures.figure_impls.Pawn;
 
-import static com.company.core.BoardLetters.A;
-import static com.company.core.BoardLetters.F;
+import static com.company.core.BoardLetters.*;
 
 public class Game {
 
@@ -18,15 +18,11 @@ public class Game {
 
 
         try {
-
-
-
             board.addFigure(new King(new Position(A, 8), true));
-            board.addFigure(new Queen(new Position(F, 7), true));
-            board.addFigure(new Queen(new Position(F, 3), true));
+            board.addFigure(new Pawn(new Position(G, 6), true));
+            board.addFigure(new Knight(new Position(H, 8), false));
 
             board.addFigure(new King(new Position(A, 1), false));
-
 
         } catch (OccupiedSquareException ignore){}
         moveReader.requestMove();
