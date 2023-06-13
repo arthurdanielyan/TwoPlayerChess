@@ -17,14 +17,15 @@ public class Game {
     public static void start() {
 
 
-        try {
-            board.addFigure(new King(new Position(A, 8), true));
-            board.addFigure(new Pawn(new Position(G, 6), true));
-            board.addFigure(new Knight(new Position(H, 8), false));
-
-            board.addFigure(new King(new Position(A, 1), false));
-
-        } catch (OccupiedSquareException ignore){}
+//        try {
+//            board.addFigure(new King(new Position(A, 8), true));
+//            board.addFigure(new Pawn(new Position(G, 6), true));
+//            board.addFigure(new Knight(new Position(H, 8), false));
+//
+//            board.addFigure(new King(new Position(A, 1), false));
+//
+//        } catch (OccupiedSquareException ignore){}
+        board.resetBoard();
         moveReader.requestMove();
     }
 }

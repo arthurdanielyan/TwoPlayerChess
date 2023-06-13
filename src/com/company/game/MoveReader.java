@@ -37,6 +37,22 @@ public class MoveReader {
     }
 
     public void readMove(String moveReq) {
+        if(moveReq.equals("O-O-O")) {
+            if(!board.getKing(moveOfWhite).castle(false).isLegal()) {
+                System.out.println("Impossible move, try again");
+                requestMove();
+            } else {
+                moveOfWhite = !moveOfWhite;
+            }
+        } else if (moveReq.equals("O-O")) {
+            if(!board.getKing(moveOfWhite).castle(true).isLegal()) {
+                System.out.println("Impossible move, try again");
+                requestMove();
+            } else {
+                moveOfWhite = !moveOfWhite;
+            }
+        }
+
         char figureToMoveLetter = moveReq.charAt(0); // doesn't consider castles and pawn promotions
         List<? extends Figure> foundFigures = new ArrayList<>();
 
