@@ -4,7 +4,7 @@ import com.company.core.Position;
 
 public class OccupiedSquareException extends Exception {
 
-    private Position position;
+    private final Position position;
 
     public OccupiedSquareException(Position position) {
         this.position = position;

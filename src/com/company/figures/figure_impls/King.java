@@ -1,5 +1,6 @@
 package com.company.figures.figure_impls;
 
+import com.company.core.Move;
 import com.company.game.Game;
 import com.company.core.BoardLetters;
 import com.company.core.MoveInfo;
@@ -35,7 +36,9 @@ public class King extends Figure {
                     if(rook == null) return new MoveInfo(null, false, false);
                     MoveInfo isRookCastleable = ((Rook) rook).castle(true);
                     if(isRookCastleable.isLegal()) {
-                        position = new Position(G, 1);
+                        Position to = new Position(G, 1);
+                        Game.board.onMove(new Move(position, to, this, null));
+                        position = to;
                         return new MoveInfo(position, false, true);
                     }
                 }
@@ -45,7 +48,9 @@ public class King extends Figure {
                     if(rook == null) return new MoveInfo(null, false, false);
                     MoveInfo isRookCastleable = ((Rook) rook).castle(true);
                     if(isRookCastleable.isLegal()) {
-                        position = new Position(G, 8);
+                        Position to = new Position(G, 8);
+                        Game.board.onMove(new Move(position, to, this, null));
+                        position = to;
                         return new MoveInfo(position, false, true);
                     }
                 }
@@ -57,7 +62,9 @@ public class King extends Figure {
                     if (rook == null) return new MoveInfo(null, false, false);
                     MoveInfo isRookCastleable = ((Rook) rook).castle(false);
                     if (isRookCastleable.isLegal()) {
-                        position = new Position(C, 1);
+                        Position to = new Position(C, 1);
+                        Game.board.onMove(new Move(position, to, this, null));
+                        position = to;
                         return new MoveInfo(position, false, true);
                     }
                 }
@@ -67,7 +74,9 @@ public class King extends Figure {
                     if (rook == null) return new MoveInfo(null, false, false);
                     MoveInfo isRookCastleable = ((Rook) rook).castle(false);
                     if (isRookCastleable.isLegal()) {
-                        position = new Position(C, 1);
+                        Position to = new Position(C, 8);
+                        Game.board.onMove(new Move(position, to, this, null));
+                        position = to;
                         return new MoveInfo(position, false, true);
                     }
                 }
@@ -193,8 +202,8 @@ public class King extends Figure {
         else return Collections.emptyList(); // Knight and Pawn case, their checks cannot be covered
 
         List<Position> possibleCovers = new LinkedList<>();
-        List<Position> checkerMoves = checker.controlSquares();
-        for(Position cover : coversFinder.controlSquares()) {
+        List<Position> checkerMoves = checker.possibleMoves();
+        for(Position cover : coversFinder.possibleMoves()) {
             if (checkerMoves.contains(cover)) {
                 possibleCovers.add(cover);
             }

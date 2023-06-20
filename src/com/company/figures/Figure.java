@@ -1,5 +1,6 @@
 package com.company.figures;
 
+import com.company.core.Move;
 import com.company.figures.figure_impls.*;
 import com.company.game.Game;
 import com.company.core.MoveInfo;
@@ -32,7 +33,7 @@ public abstract class Figure {
 
     public MoveInfo move(Position newPosition) {
         if(possibleMoves().contains(newPosition)) {
-            Position oldPosition = position;
+//            Position oldPosition = position;
             boolean isCapture = false;
             Figure victim = Game.board.getFigureByPosition(newPosition);
             if(victim != null) {
@@ -48,8 +49,9 @@ public abstract class Figure {
                     isCapture = true;
                 }
             }
+            Move move = new Move(this.position, newPosition, this, victim);
             position = newPosition;
-            Game.board.onMove(this, oldPosition);
+            Game.board.onMove(move);
             return new MoveInfo(newPosition, isCapture, true);
         }
         return new MoveInfo(newPosition, false, false);
@@ -66,7 +68,7 @@ public abstract class Figure {
      *
      *  The only difference between implementations of this and possibleMoves()
      *  is that this ignores the opposite color king as a piece, and doesn't
-     *  care whether the piece is pinned
+     *  care whether the piece is pinned and also contains the first figure on its way
      * */
     public abstract List<Position> controlSquares();
 
@@ -81,11 +83,11 @@ public abstract class Figure {
         for(Position p : bishopCheck.controlSquares()) {
             Figure f = Game.board.getFigureByPosition(p);
             if(f != null && f.isWhite != this.isWhite && (f instanceof Bishop || f instanceof Queen)) {
-                if(f instanceof Queen && f.position.x != myKing.position.x && f.position.y != myKing.position.y){
+                if(f.position.x != myKing.position.x && f.position.y != myKing.position.y){
                     try {
                         Game.board.addFigure(this);
                     } catch (OccupiedSquareException ignore) {}
-                    if(f.controlSquares().contains(this.position))
+                    if(f.controlSquares().contains(this.position)) // DON'T REMOVE THIS ANYMORE IDIOT
                     return f;
                 }
                 if(f.controlSquares().contains(this.position))

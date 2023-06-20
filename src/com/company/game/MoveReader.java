@@ -17,15 +17,28 @@ public class MoveReader {
     private final List<Character> figureLetters = Arrays.asList('K', 'Q', 'B', 'N', 'R');
 
     private final Board board;
-    private boolean moveOfWhite = true;
 
     public MoveReader(Board board) {
         this.board = board;
     }
 
+    @SuppressWarnings("deprecation")
     public void requestMove() {
         String moveOf;
-        if(this.moveOfWhite) moveOf = "White";
+        if(board.mated) {
+            System.out.println();
+            board.render();
+            System.out.println();
+            if(board.moveOfWhite) {
+                System.out.println("Black won by checkmate!");
+            } else {
+                System.out.println("White won by checkmate!");
+            }
+            Thread.currentThread().stop();
+            // Thread needs to be stops before after all the readMove() methods return some bullshit will happen
+        }
+
+        if(board.moveOfWhite) moveOf = "White";
         else moveOf = "Black";
         System.out.println();
         System.out.println(moveOf + " to move, enter the move");
@@ -38,39 +51,45 @@ public class MoveReader {
 
     public void readMove(String moveReq) {
         if(moveReq.equals("O-O-O")) {
-            if(!board.getKing(moveOfWhite).castle(false).isLegal()) {
+            if(!board.getKing(board.moveOfWhite).castle(false).isLegal()) {
                 System.out.println("Impossible move, try again");
-                requestMove();
-            } else {
-                moveOfWhite = !moveOfWhite;
             }
+            requestMove();
         } else if (moveReq.equals("O-O")) {
-            if(!board.getKing(moveOfWhite).castle(true).isLegal()) {
+            if(!board.getKing(board.moveOfWhite).castle(true).isLegal()) {
                 System.out.println("Impossible move, try again");
-                requestMove();
-            } else {
-                moveOfWhite = !moveOfWhite;
             }
+            requestMove();
         }
 
-        char figureToMoveLetter = moveReq.charAt(0); // doesn't consider castles and pawn promotions
+        String moveReq1 = moveReq;
+        if(moveReq.charAt(moveReq.length()-1) == '#' || moveReq.charAt(moveReq.length()-1) == '+') {
+            moveReq1 = moveReq.substring(0, moveReq.length()-1);
+        }
+        char figureToMoveLetter = moveReq1.charAt(0);
         List<? extends Figure> foundFigures = new ArrayList<>();
 
         boolean pawnPromotion = false;
 
-        String destinationSquareString = moveReq.substring(moveReq.length() - 2);
+        String destinationSquareString = "";
+        try {
+            destinationSquareString = moveReq1.substring(moveReq1.length() - 2);
+        } catch (StringIndexOutOfBoundsException e) {
+            System.out.println("Couldn't resolve move");
+            requestMove();
+        }
         Position destination = null;
         try {
             destination = Position.toPosition(destinationSquareString);
         } catch (IllegalArgumentException e) {
-            if(moveReq.charAt(moveReq.length()-2) != '=') {
+            if(moveReq1.charAt(moveReq1.length()-2) != '=') {
                 System.out.println("Couldn't resolve move");
                 requestMove();
             } else {
-                destinationSquareString = moveReq.substring(moveReq.length() - 4, moveReq.length() - 2);
+                destinationSquareString = moveReq1.substring(moveReq1.length() - 4, moveReq1.length() - 2);
                 try {
                     destination = Position.toPosition(destinationSquareString);
-                    if((moveOfWhite && destination.y == 8) || (!moveOfWhite && destination.y == 1))
+                    if((board.moveOfWhite && destination.y == 8) || (!board.moveOfWhite && destination.y == 1))
                     pawnPromotion = true;
                 } catch (IllegalArgumentException e1) {
                     System.out.println("Couldn't resolve move");
@@ -81,15 +100,15 @@ public class MoveReader {
 
         if(figureLetters.contains(figureToMoveLetter)) {
             switch (figureToMoveLetter) {
-                case 'K' -> foundFigures = board.getFigures(King.class, moveOfWhite);
-                case 'Q' -> foundFigures = board.getFigures(Queen.class, moveOfWhite);
-                case 'B' -> foundFigures = board.getFigures(Bishop.class, moveOfWhite);
-                case 'N' -> foundFigures = board.getFigures(Knight.class, moveOfWhite);
-                case 'R' -> foundFigures = board.getFigures(Rook.class, moveOfWhite);
+                case 'K' -> foundFigures = board.getFigures(King.class, board.moveOfWhite);
+                case 'Q' -> foundFigures = board.getFigures(Queen.class, board.moveOfWhite);
+                case 'B' -> foundFigures = board.getFigures(Bishop.class, board.moveOfWhite);
+                case 'N' -> foundFigures = board.getFigures(Knight.class, board.moveOfWhite);
+                case 'R' -> foundFigures = board.getFigures(Rook.class, board.moveOfWhite);
             }
         } else if(xOfFile(figureToMoveLetter) > 0){ // a to h
-            foundFigures = board.getFigures(Pawn.class, moveOfWhite);
-            foundFigures.removeIf((Predicate<Figure>) figure -> (figure.position.x != xOfFile(figureToMoveLetter)) || figure.isWhite != moveOfWhite);
+            foundFigures = board.getFigures(Pawn.class, board.moveOfWhite);
+            foundFigures.removeIf((Predicate<Figure>) figure -> (figure.position.x != xOfFile(figureToMoveLetter)) || figure.isWhite != board.moveOfWhite);
         } else {
             System.out.println("Couldn't resolve move");
             requestMove();
@@ -103,7 +122,7 @@ public class MoveReader {
             if(mover instanceof Pawn) {
                 if((mover.isWhite && destination.y == 8) || (!mover.isWhite && destination.y == 1)) {
                     Class<? extends Figure> promoteTo;
-                    switch (moveReq.charAt(moveReq.length()-1)) {
+                    switch (moveReq1.charAt(moveReq1.length()-1)) {
                         case 'Q' -> promoteTo = Queen.class;
                         case 'B' -> promoteTo = Bishop.class;
                         case 'N' -> promoteTo = Knight.class;
@@ -122,19 +141,11 @@ public class MoveReader {
             }
         }
 
-
-        /*if(foundFigures.size() == 1) {
-            if(board.getFigureByPosition(destination) != null && moveReq.charAt(moveReq.length()-3) != 'x'){
-                System.out.println("Couldn't resolve move, did you mean " + moveReq.substring(0, moveReq.length()-2) + "x" + destinationSquareString);
-                requestMove();
-            }
-            foundFigures.get(0).move(Position.toPosition(destinationSquareString));
-        }
-        else */if(foundFigures.size() == 0) {
+        if(foundFigures.size() == 0) {
             System.out.println("Impossible move, try again");
             requestMove();
         } else {
-            StringBuilder moveReqCopy = new StringBuilder(moveReq);
+            StringBuilder moveReqCopy = new StringBuilder(moveReq1);
             moveReqCopy.deleteCharAt(0);
             moveReqCopy.deleteCharAt(moveReqCopy.length()-1);
             try {
@@ -177,17 +188,15 @@ public class MoveReader {
                     }
                 }
                 foundFigures.get(0).move(destination);
+                if(board.mated && moveReq.charAt(moveReq.length()-1) != '#') {
+                    board.takeback();
+                    System.out.println("Did you mean " + moveReq + "#?");
+                    requestMove();
+                }
             }
         }
-        moveOfWhite = !moveOfWhite;
         requestMove();
     }
-
-    /**
-     * Undone things
-     * 1. add castles
-     *
-     * */
 
 
     private static int xOfFile(char c) {
@@ -197,10 +206,4 @@ public class MoveReader {
         return -1;
     }
 
-    private static <T> boolean containsAny(List<T> container, List<T> elements) {
-        for(T e : elements) {
-            if(container.contains(e)) return true;
-        }
-        return false;
-    }
 }

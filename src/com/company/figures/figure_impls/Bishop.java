@@ -1,10 +1,9 @@
 package com.company.figures.figure_impls;
 
-import com.company.game.Game;
 import com.company.core.Position;
-import com.company.figures.figure_helpers.CombinedMovesCondition;
 import com.company.figures.Figure;
 import com.company.figures.figure_helpers.MoveRestrictions;
+import com.company.game.Game;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +23,7 @@ public class Bishop extends Figure {
     }
 
 
-    private List<Position> combinedMoves(CombinedMovesCondition condition, MoveRestrictions mr) {
+    private List<Position> combinedMoves(boolean control, MoveRestrictions mr) {
         List<Position> possibleMoves = new ArrayList<>();
 
 
@@ -33,25 +32,25 @@ public class Bishop extends Figure {
             for (int i = 1; i <= 8 - position.x; i++) {
                 Position currentPos = new Position(position.x + i, position.y + i);
                 Figure figure = Game.board.getFigureByPosition(currentPos);
-                if(figure == null) {
-                    possibleMoves.add(currentPos);
-                } else if(figure.isWhite != isWhite) {
-                    possibleMoves.add(currentPos);
-                    if(!condition.isEnemyKing(figure))break;
+                possibleMoves.add(currentPos);
+                if (figure != null) {
+                    if (!control && figure.isWhite != isWhite) break;
+                    if (figure.isWhite == isWhite && !(figure instanceof King)) {
+                        break;
+                    }
                 }
-                else break;
             }
         } else {
             for (int i = 1; i <= 8 - position.y; i++) {
                 Position currentPos = new Position(position.x + i, position.y + i);
                 Figure figure = Game.board.getFigureByPosition(currentPos);
-                if(figure == null) {
-                    possibleMoves.add(currentPos);
-                } else if(figure.isWhite != isWhite){
-                    possibleMoves.add(currentPos);
-                    if(!condition.isEnemyKing(figure))break;
+                possibleMoves.add(currentPos);
+                if (figure != null) {
+                    if (!control && figure.isWhite != isWhite) break;
+                    if (figure.isWhite == isWhite && !(figure instanceof King)) {
+                        break;
+                    }
                 }
-                else break;
             }
         }
 
@@ -60,25 +59,25 @@ public class Bishop extends Figure {
             for (int i = 1; i <= 8 - position.x; i++) {
                 Position currentPos = new Position(position.x + i, position.y - i);
                 Figure figure = Game.board.getFigureByPosition(currentPos);
-                if(figure == null) {
-                    possibleMoves.add(currentPos);
-                } else if(figure.isWhite != isWhite){
-                    possibleMoves.add(currentPos);
-                    if(!condition.isEnemyKing(figure))break;
+                possibleMoves.add(currentPos);
+                if (figure != null) {
+                    if (!control && figure.isWhite != isWhite) break;
+                    if (figure.isWhite == isWhite && !(figure instanceof King)) {
+                        break;
+                    }
                 }
-                else break;
             }
         } else {
             for (int i = 1; i < position.y; i++) {
                 Position currentPos = new Position(position.x + i, position.y - i);
                 Figure figure = Game.board.getFigureByPosition(currentPos);
-                if(figure == null) {
-                    possibleMoves.add(currentPos);
-                } else if(figure.isWhite != isWhite){
-                    possibleMoves.add(currentPos);
-                    if(!condition.isEnemyKing(figure))break;
+                possibleMoves.add(currentPos);
+                if (figure != null) {
+                    if (!control && figure.isWhite != isWhite) break;
+                    if (figure.isWhite == isWhite && !(figure instanceof King)) {
+                        break;
+                    }
                 }
-                else break;
             }
         }
 
@@ -87,25 +86,25 @@ public class Bishop extends Figure {
             for (int i = 1; i < position.x; i++) {
                 Position currentPos = new Position(position.x - i, position.y + i);
                 Figure figure = Game.board.getFigureByPosition(currentPos);
-                if(figure == null) {
-                    possibleMoves.add(currentPos);
-                } else if(figure.isWhite != isWhite){
-                    possibleMoves.add(currentPos);
-                    if(!condition.isEnemyKing(figure))break;
+                possibleMoves.add(currentPos);
+                if (figure != null) {
+                    if (!control && figure.isWhite != isWhite) break;
+                    if (figure.isWhite == isWhite && !(figure instanceof King)) {
+                        break;
+                    }
                 }
-                else break;
             }
         } else {
             for (int i = 1; i <= 8 - position.y; i++) {
                 Position currentPos = new Position(position.x - i, position.y + i);
                 Figure figure = Game.board.getFigureByPosition(currentPos);
-                if(figure == null) {
-                    possibleMoves.add(currentPos);
-                } else if(figure.isWhite != isWhite){
-                    possibleMoves.add(currentPos);
-                    if(!condition.isEnemyKing(figure))break;
+                possibleMoves.add(currentPos);
+                if (figure != null) {
+                    if (!control && figure.isWhite != isWhite) break;
+                    if (figure.isWhite == isWhite && !(figure instanceof King)) {
+                        break;
+                    }
                 }
-                else break;
             }
         }
 
@@ -114,25 +113,25 @@ public class Bishop extends Figure {
             for (int i = 1; i < position.x; i++) {
                 Position currentPos = new Position(position.x - i, position.y - i);
                 Figure figure = Game.board.getFigureByPosition(currentPos);
-                if(figure == null) {
-                    possibleMoves.add(currentPos);
-                } else if(figure.isWhite != isWhite){
-                    possibleMoves.add(currentPos);
-                    if(!condition.isEnemyKing(figure))break;
+                possibleMoves.add(currentPos);
+                if (figure != null) {
+                    if (!control && figure.isWhite != isWhite) break;
+                    if (figure.isWhite == isWhite && !(figure instanceof King)) {
+                        break;
+                    }
                 }
-                else break;
             }
         } else {
             for (int i = 1; i < position.y; i++) {
                 Position currentPos = new Position(position.x - i, position.y - i);
                 Figure figure = Game.board.getFigureByPosition(currentPos);
-                if(figure == null) {
-                    possibleMoves.add(currentPos);
-                } else if(figure.isWhite != isWhite){
-                    possibleMoves.add(currentPos);
-                    if(!condition.isEnemyKing(figure))break;
+                possibleMoves.add(currentPos);
+                if (figure != null) {
+                    if (!control && figure.isWhite != isWhite) break;
+                    if (figure.isWhite == isWhite && !(figure instanceof King)) {
+                        break;
+                    }
                 }
-                else break;
             }
         }
 
@@ -145,31 +144,31 @@ public class Bishop extends Figure {
             Position pinner = isPinned().position;
             if(pinner.x < this.position.x) { // pinner is at the right
                 if(pinner.y > this.position.y) {
-                    return combinedMoves((Figure f) -> false, MoveRestrictions.RTL_VER);
+                    return combinedMoves(false, MoveRestrictions.RTL_VER);
                 } else {
-                    return combinedMoves((Figure f) -> false, MoveRestrictions.LTR_HOR);
+                    return combinedMoves(false, MoveRestrictions.LTR_HOR);
                 }
             } else if (pinner.x > this.position.x) { // pinner is at the left
                 if(pinner.y > this.position.y) {
-                    return combinedMoves((Figure f) -> false, MoveRestrictions.LTR_HOR);
+                    return combinedMoves(false, MoveRestrictions.LTR_HOR);
                 } else {
-                    return combinedMoves((Figure f) -> false, MoveRestrictions.RTL_VER);
+                    return combinedMoves(false, MoveRestrictions.RTL_VER);
                 }
             }
             return Collections.emptyList();
         }
-        if(!Game.board.getKing(this.isWhite).checkers().isEmpty()) { // if the King is under a check;
+        if(!Game.board.getKing(this.isWhite).checkers().isEmpty()) { // if the King is under a check
             List<Position> possibleMoves = Game.board.getKing(this.isWhite).possibleCovers();
-            possibleMoves.retainAll(this.combinedMoves((Figure f) -> false, MoveRestrictions.FREE));
+            possibleMoves.retainAll(this.combinedMoves(false, MoveRestrictions.FREE));
             return possibleMoves;
         }
 
-        return combinedMoves((Figure f) -> false, MoveRestrictions.FREE);
+        return combinedMoves(false, MoveRestrictions.FREE);
     }
 
     @Override
     public List<Position> controlSquares() {
         // isWhite check is not necessarily needed
-        return combinedMoves((Figure f) -> (f.isWhite != this.isWhite && f instanceof King), MoveRestrictions.FREE);
+        return combinedMoves(true, MoveRestrictions.FREE);
     }
 }

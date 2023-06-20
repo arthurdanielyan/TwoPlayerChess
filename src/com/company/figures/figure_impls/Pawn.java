@@ -1,10 +1,10 @@
 package com.company.figures.figure_impls;
 
-import com.company.core.exceptions.OccupiedSquareException;
-import com.company.game.Game;
 import com.company.core.Position;
 import com.company.core.exceptions.IllegalSquareException;
+import com.company.core.exceptions.OccupiedSquareException;
 import com.company.figures.Figure;
+import com.company.game.Game;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -132,7 +132,7 @@ public class Pawn extends Figure {
         }
 
 
-        if(isPinned() != null) {
+        if(isPinned() != null) { // excluding moves
             Figure pinner = isPinned();
             if(isWhite) {
                 if (pinner.position.y > this.position.y && (pinner instanceof Rook || pinner instanceof Queen)) {
@@ -167,6 +167,11 @@ public class Pawn extends Figure {
                     }
                 }
             }
+        }
+
+        if(!Game.board.getKing(this.isWhite).checkers().isEmpty()) { // if the King is under a check
+            List<Position> covers = Game.board.getKing(this.isWhite).possibleCovers();
+            possibleMoves.retainAll(covers);
         }
 
         removeOccupiedCells(possibleMoves);

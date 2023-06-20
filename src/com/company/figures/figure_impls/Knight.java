@@ -22,18 +22,11 @@ public class Knight extends Figure {
         }
     }
 
-    @Override
-    public List<Position> possibleMoves() {
-
-        if(isPinned() != null) {
-            return Collections.emptyList();
-        }
-
+    private List<Position> combinedMoves() {
         List<Position> possibleMoves = new ArrayList<>();
 
         try {
             possibleMoves.add(new Position(position.x + 1, position.y - 2));
-            System.out.println(new Position(position.x + 1, position.y - 2));
         } catch (IllegalSquareException ignored) {}
         try {
             possibleMoves.add(new Position(position.x - 1, position.y - 2));
@@ -63,7 +56,17 @@ public class Knight extends Figure {
     }
 
     @Override
+    public List<Position> possibleMoves() {
+
+        if(isPinned() != null) {
+            return Collections.emptyList();
+        }
+
+        return combinedMoves();
+    }
+
+    @Override
     public List<Position> controlSquares() {
-        return this.possibleMoves();
+        return this.combinedMoves();
     }
 }
