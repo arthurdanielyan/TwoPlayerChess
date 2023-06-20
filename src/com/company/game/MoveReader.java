@@ -22,7 +22,7 @@ public class MoveReader {
         this.board = board;
     }
 
-    @SuppressWarnings("deprecation")
+//    @SuppressWarnings("deprecation")
     public void requestMove() {
         String moveOf;
         if(board.mated) {
@@ -34,9 +34,10 @@ public class MoveReader {
             } else {
                 System.out.println("White won by checkmate!");
             }
-            Thread.currentThread().stop();
-            // Thread needs to be stops before after all the readMove() methods return some bullshit will happen
-        }
+            return;
+//            Thread.currentThread().stop();
+            // Thread needs to be stopped because after all the readMove() methods return some bullshit will happen
+        }// requiring the '+' sign, Move info and takebacks for castles and pawn promotions,
 
         if(board.moveOfWhite) moveOf = "White";
         else moveOf = "Black";
@@ -55,11 +56,13 @@ public class MoveReader {
                 System.out.println("Impossible move, try again");
             }
             requestMove();
+            return;
         } else if (moveReq.equals("O-O")) {
             if(!board.getKing(board.moveOfWhite).castle(true).isLegal()) {
                 System.out.println("Impossible move, try again");
             }
             requestMove();
+            return;
         }
 
         String moveReq1 = moveReq;
@@ -71,20 +74,22 @@ public class MoveReader {
 
         boolean pawnPromotion = false;
 
-        String destinationSquareString = "";
+        String destinationSquareString;
         try {
             destinationSquareString = moveReq1.substring(moveReq1.length() - 2);
         } catch (StringIndexOutOfBoundsException e) {
             System.out.println("Couldn't resolve move");
             requestMove();
+            return;
         }
-        Position destination = null;
+        Position destination;
         try {
             destination = Position.toPosition(destinationSquareString);
         } catch (IllegalArgumentException e) {
             if(moveReq1.charAt(moveReq1.length()-2) != '=') {
                 System.out.println("Couldn't resolve move");
                 requestMove();
+                return;
             } else {
                 destinationSquareString = moveReq1.substring(moveReq1.length() - 4, moveReq1.length() - 2);
                 try {
@@ -94,6 +99,7 @@ public class MoveReader {
                 } catch (IllegalArgumentException e1) {
                     System.out.println("Couldn't resolve move");
                     requestMove();
+                    return;
                 }
             }
         }
@@ -112,6 +118,7 @@ public class MoveReader {
         } else {
             System.out.println("Couldn't resolve move");
             requestMove();
+            return;
         }
         final Position finalDestination = destination;
         foundFigures.removeIf((Predicate<Figure>) figure -> (!figure.possibleMoves().contains(finalDestination)));
@@ -129,14 +136,15 @@ public class MoveReader {
                         case 'R' -> promoteTo = Rook.class;
                         default -> {
                             System.out.println("Couldn't resolve move");
-                            promoteTo = Pawn.class;
                             requestMove();
+                            return;
                         }
                     }
                     if(((Pawn) mover).promote(promoteTo, destination)) {
                         System.out.println("Couldn't resolve move");
                     }
                     requestMove();
+                    return;
                 }
             }
         }
@@ -144,6 +152,7 @@ public class MoveReader {
         if(foundFigures.size() == 0) {
             System.out.println("Impossible move, try again");
             requestMove();
+            return;
         } else {
             StringBuilder moveReqCopy = new StringBuilder(moveReq1);
             moveReqCopy.deleteCharAt(0);
@@ -156,6 +165,7 @@ public class MoveReader {
             if(moveReqCopy.length() == 0 && foundFigures.size() > 1) {
                 System.out.println("Couldn't identify the piece as multiple pieces can go to the specified square");
                 requestMove();
+                return;
             }
             final String identifier = moveReqCopy.toString();
             foundFigures.removeIf((figure -> {
@@ -176,15 +186,18 @@ public class MoveReader {
             if (foundFigures.size() > 1) {
                 System.out.println("Couldn't identify the piece as multiple pieces can go to the specified square");
                 requestMove();
+                return;
             } else if(foundFigures.size() == 0) { // happens after something like g7=Q
                 System.out.println("Impossible move, try again");
                 requestMove();
+                return;
             } else {
                 Figure mover = foundFigures.get(0);
                 if(mover instanceof Pawn) {
                     if((mover.isWhite && destination.y == 8) || (!mover.isWhite && destination.y == 1)) {
                         System.out.println("Specify the piece which the pawn should promote to");
                         requestMove();
+                        return;
                     }
                 }
                 foundFigures.get(0).move(destination);
@@ -192,6 +205,7 @@ public class MoveReader {
                     board.takeback();
                     System.out.println("Did you mean " + moveReq + "#?");
                     requestMove();
+                    return;
                 }
             }
         }
