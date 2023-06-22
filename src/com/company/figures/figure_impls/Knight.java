@@ -3,6 +3,8 @@ package com.company.figures.figure_impls;
 import com.company.core.Position;
 import com.company.core.exceptions.IllegalSquareException;
 import com.company.figures.Figure;
+import com.company.figures.figure_helpers.MoveRestrictions;
+import com.company.game.Game;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,6 +62,15 @@ public class Knight extends Figure {
 
         if(isPinned() != null) {
             return Collections.emptyList();
+        }
+        List<Figure> checkers = Game.board.getKing(this.isWhite).checkers();
+        if(!checkers.isEmpty()) { // if the King is under a check
+            List<Position> possibleMoves = Game.board.getKing(this.isWhite).possibleCovers();
+            if(checkers.size() == 1) {
+                possibleMoves.add(checkers.get(0).position);
+            }
+            possibleMoves.retainAll(this.combinedMoves());
+            return possibleMoves;
         }
 
         return combinedMoves();

@@ -1,9 +1,9 @@
 package com.company.figures.figure_impls;
 
 import com.company.core.Move;
+import com.company.core.move_information_wrappers.MoveInfo;
 import com.company.game.Game;
 import com.company.core.BoardLetters;
-import com.company.core.MoveInfo;
 import com.company.core.Position;
 import com.company.core.exceptions.IllegalSquareException;
 import com.company.figures.Figure;
@@ -167,6 +167,9 @@ public class King extends Figure {
                     checkers.add(f);
                 }
                 checkers.add(f);
+            } else if (f != null && f.isWhite != this.isWhite && f instanceof Pawn) {
+                if(f.controlSquares().contains(this.position))
+                    checkers.add(f);
             }
         }
         for(Position p : rookCheck.controlSquares()) {

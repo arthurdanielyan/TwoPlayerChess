@@ -1,8 +1,8 @@
 package com.company.figures.figure_impls;
 
 import com.company.core.BoardLetters;
-import com.company.core.MoveInfo;
 import com.company.core.Position;
+import com.company.core.move_information_wrappers.MoveInfo;
 import com.company.figures.Figure;
 import com.company.figures.figure_helpers.MoveRestrictions;
 import com.company.game.Game;
@@ -125,8 +125,12 @@ public class Rook extends Figure {
 
             return Collections.emptyList();
         }
-        if(!Game.board.getKing(this.isWhite).checkers().isEmpty()) { // if the King is under a check
+        List<Figure> checkers = Game.board.getKing(this.isWhite).checkers();
+        if(!checkers.isEmpty()) { // if the King is under a check
             List<Position> possibleMoves = Game.board.getKing(this.isWhite).possibleCovers();
+            if(checkers.size() == 1) {
+                possibleMoves.add(checkers.get(0).position);
+            }
             possibleMoves.retainAll(this.combinedMoves(false, MoveRestrictions.FREE));
             return possibleMoves;
         }

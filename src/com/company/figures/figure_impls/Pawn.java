@@ -169,8 +169,12 @@ public class Pawn extends Figure {
             }
         }
 
-        if(!Game.board.getKing(this.isWhite).checkers().isEmpty()) { // if the King is under a check
+        List<Figure> checkers = Game.board.getKing(this.isWhite).checkers();
+        if(!checkers.isEmpty()) { // if the King is under a check
             List<Position> covers = Game.board.getKing(this.isWhite).possibleCovers();
+            if(checkers.size() == 1) {
+                covers.add(checkers.get(0).position);
+            }
             possibleMoves.retainAll(covers);
         }
 

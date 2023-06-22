@@ -1,9 +1,9 @@
 package com.company.figures;
 
 import com.company.core.Move;
+import com.company.core.move_information_wrappers.MoveInfo;
 import com.company.figures.figure_impls.*;
 import com.company.game.Game;
-import com.company.core.MoveInfo;
 import com.company.core.Position;
 import com.company.core.exceptions.OccupiedSquareException;
 
