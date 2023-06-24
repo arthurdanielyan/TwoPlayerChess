@@ -51,6 +51,13 @@ public class MoveReader {
             System.out.println("Draw by repetition!");
             return;
         }
+        if(board.isInsufficientMaterial()) {
+            System.out.println();
+            board.render();
+            System.out.println();
+            System.out.println("Draw by insufficient material!");
+            return;
+        }
         if(board.isMoveOfWhite()) moveOf = "White";
         else moveOf = "Black";
         System.out.println();
@@ -58,29 +65,53 @@ public class MoveReader {
         board.render();
 
         Scanner input = new Scanner(System.in);
-        readMove(input.next());
+        readMove(input.nextLine());
         input.close();
     }
 
     public void readMove(String moveReq) {
-        if(moveReq.equals("O-O-O")) {
-            King castlingKing = board.getKing(board.isMoveOfWhite());
-            if(!castlingKing.isCastleable(false)) {
-                System.out.println("Impossible move, try again");
-            } else {
-                castlingKing.castle(false);
+        switch (moveReq) {
+            case "1/2 - 1/2", "1/2-1/2" -> {
+                System.out.println();
+                board.render();
+                System.out.println();
+                System.out.println("Draw by agreement!");
+                return;
             }
-            requestMove();
-            return;
-        } else if (moveReq.equals("O-O")) {
-            King castlingKing = board.getKing(board.isMoveOfWhite());
-            if(!castlingKing.isCastleable(true)) {
-                System.out.println("Impossible move, try again");
-            } else {
-                castlingKing.castle(true);
+            case "1-0" -> {
+                System.out.println();
+                board.render();
+                System.out.println();
+                System.out.println("White won by resignation!");
+                return;
             }
-            requestMove();
-            return;
+            case "0-1" -> {
+                System.out.println();
+                board.render();
+                System.out.println();
+                System.out.println("Black won by resignation!");
+                return;
+            }
+            case "O-O-O" -> {
+                King castlingKing = board.getKing(board.isMoveOfWhite());
+                if (!castlingKing.isCastleable(false)) {
+                    System.out.println("Impossible move, try again");
+                } else {
+                    castlingKing.castle(false);
+                }
+                requestMove();
+                return;
+            }
+            case "O-O" -> {
+                King castlingKing = board.getKing(board.isMoveOfWhite());
+                if (!castlingKing.isCastleable(true)) {
+                    System.out.println("Impossible move, try again");
+                } else {
+                    castlingKing.castle(true);
+                }
+                requestMove();
+                return;
+            }
         }
 
         String moveReq1 = moveReq;

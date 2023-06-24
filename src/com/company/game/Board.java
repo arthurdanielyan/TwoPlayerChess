@@ -26,6 +26,7 @@ public class Board {
     private boolean mated = false;
     private boolean stalemate = false;
     private boolean repetition = false;
+    private boolean insufficientMaterial = false;
     private final List<BoardPosition> positions = new LinkedList<>();
 
     private boolean gameEnded = false;
@@ -106,6 +107,10 @@ public class Board {
                 repetition = true;
                 this.gameEnded = true;
             }
+        }
+        if(this.figures.size() == 2) {
+            insufficientMaterial = true;
+            this.gameEnded = true;
         }
 
         moves.add(move);
@@ -346,5 +351,9 @@ public class Board {
 
     public boolean isRepetition() {
         return repetition;
+    }
+
+    public boolean isInsufficientMaterial() {
+        return insufficientMaterial;
     }
 }
