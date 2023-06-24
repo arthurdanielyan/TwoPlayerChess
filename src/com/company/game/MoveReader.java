@@ -26,27 +26,32 @@ public class MoveReader {
 //    @SuppressWarnings("deprecation")
     public void requestMove() {
         String moveOf;
-        if(board.mated) {
+        if(board.isMated()) {
             System.out.println();
             board.render();
             System.out.println();
-            if(board.moveOfWhite) {
+            if(board.isMoveOfWhite()) {
                 System.out.println("Black won by checkmate!");
             } else {
                 System.out.println("White won by checkmate!");
             }
             return;
-//            Thread.currentThread().stop();
-            // Thread needs to be stopped because after all the readMove() methods return some bullshit will happen
-        }// requiring the '+' sign, Move info and takebacks for castles and pawn promotions,
-        if(board.stalemate) {
+        }
+        if(board.isStalemate()) {
             System.out.println();
             board.render();
             System.out.println();
             System.out.println("Draw by stalemate!");
             return;
         }
-        if(board.moveOfWhite) moveOf = "White";
+        if(board.isRepetition()) {
+            System.out.println();
+            board.render();
+            System.out.println();
+            System.out.println("Draw by repetition!");
+            return;
+        }
+        if(board.isMoveOfWhite()) moveOf = "White";
         else moveOf = "Black";
         System.out.println();
         System.out.println(moveOf + " to move, enter the move");
@@ -59,7 +64,7 @@ public class MoveReader {
 
     public void readMove(String moveReq) {
         if(moveReq.equals("O-O-O")) {
-            King castlingKing = board.getKing(board.moveOfWhite);
+            King castlingKing = board.getKing(board.isMoveOfWhite());
             if(!castlingKing.isCastleable(false)) {
                 System.out.println("Impossible move, try again");
             } else {
@@ -68,7 +73,7 @@ public class MoveReader {
             requestMove();
             return;
         } else if (moveReq.equals("O-O")) {
-            King castlingKing = board.getKing(board.moveOfWhite);
+            King castlingKing = board.getKing(board.isMoveOfWhite());
             if(!castlingKing.isCastleable(true)) {
                 System.out.println("Impossible move, try again");
             } else {
@@ -107,7 +112,7 @@ public class MoveReader {
                 destinationSquareString = moveReq1.substring(moveReq1.length() - 4, moveReq1.length() - 2);
                 try {
                     destination = Position.toPosition(destinationSquareString);
-                    if((board.moveOfWhite && destination.y == 8) || (!board.moveOfWhite && destination.y == 1))
+                    if((board.isMoveOfWhite() && destination.y == 8) || (!board.isMoveOfWhite() && destination.y == 1))
                     pawnPromotion = true;
                 } catch (IllegalArgumentException e1) {
                     System.out.println("Couldn't resolve move");
@@ -119,15 +124,15 @@ public class MoveReader {
 
         if(figureLetters.contains(figureToMoveLetter)) {
             switch (figureToMoveLetter) {
-                case 'K' -> foundFigures = board.getFigures(King.class, board.moveOfWhite);
-                case 'Q' -> foundFigures = board.getFigures(Queen.class, board.moveOfWhite);
-                case 'B' -> foundFigures = board.getFigures(Bishop.class, board.moveOfWhite);
-                case 'N' -> foundFigures = board.getFigures(Knight.class, board.moveOfWhite);
-                case 'R' -> foundFigures = board.getFigures(Rook.class, board.moveOfWhite);
+                case 'K' -> foundFigures = board.getFigures(King.class, board.isMoveOfWhite());
+                case 'Q' -> foundFigures = board.getFigures(Queen.class, board.isMoveOfWhite());
+                case 'B' -> foundFigures = board.getFigures(Bishop.class, board.isMoveOfWhite());
+                case 'N' -> foundFigures = board.getFigures(Knight.class, board.isMoveOfWhite());
+                case 'R' -> foundFigures = board.getFigures(Rook.class, board.isMoveOfWhite());
             }
         } else if(xOfFile(figureToMoveLetter) > 0){ // a to h
-            foundFigures = board.getFigures(Pawn.class, board.moveOfWhite);
-            foundFigures.removeIf((Predicate<Figure>) figure -> (figure.position.x != xOfFile(figureToMoveLetter)) || figure.isWhite != board.moveOfWhite);
+            foundFigures = board.getFigures(Pawn.class, board.isMoveOfWhite());
+            foundFigures.removeIf((Predicate<Figure>) figure -> (figure.position.x != xOfFile(figureToMoveLetter)) || figure.isWhite != board.isMoveOfWhite());
         } else {
             System.out.println("Couldn't resolve move");
             requestMove();
@@ -209,13 +214,13 @@ public class MoveReader {
                     }
                 }
                 foundFigures.get(0).move(destination);
-                if(board.mated && moveReq.charAt(moveReq.length()-1) != '#') {
+                if(board.isMated() && moveReq.charAt(moveReq.length()-1) != '#') {
                     board.takeback();
                     System.out.println("Did you mean " + moveReq + "#?");
                     requestMove();
                     return;
                 }
-                if(board.getKing(board.moveOfWhite).checkers().size() != 0 && !board.mated && moveReq.charAt(moveReq.length()-1) != '+') {
+                if(board.getKing(board.isMoveOfWhite()).checkers().size() != 0 && !board.isMated() && moveReq.charAt(moveReq.length()-1) != '+') {
                     board.takeback();
                     System.out.println("Did you mean " + moveReq + "+?");
                 }
@@ -231,7 +236,7 @@ public class MoveReader {
      * */
     public void makeMove(String moveReq) {
         if(moveReq.equals("O-O-O")) {
-            King castlingKing = board.getKing(board.moveOfWhite);
+            King castlingKing = board.getKing(board.isMoveOfWhite());
             if(!castlingKing.isCastleable(false)) {
                 System.out.println("Impossible move, try again");
             } else {
@@ -239,7 +244,7 @@ public class MoveReader {
             }
             return;
         } else if (moveReq.equals("O-O")) {
-            King castlingKing = board.getKing(board.moveOfWhite);
+            King castlingKing = board.getKing(board.isMoveOfWhite());
             if(!castlingKing.isCastleable(true)) {
                 System.out.println("Impossible move, try again");
             } else {
@@ -275,7 +280,7 @@ public class MoveReader {
                 destinationSquareString = moveReq1.substring(moveReq1.length() - 4, moveReq1.length() - 2);
                 try {
                     destination = Position.toPosition(destinationSquareString);
-                    if((board.moveOfWhite && destination.y == 8) || (!board.moveOfWhite && destination.y == 1))
+                    if((board.isMoveOfWhite() && destination.y == 8) || (!board.isMoveOfWhite() && destination.y == 1))
                         pawnPromotion = true;
                 } catch (IllegalArgumentException e1) {
                     System.out.println("Couldn't resolve move");
@@ -286,15 +291,15 @@ public class MoveReader {
 
         if(figureLetters.contains(figureToMoveLetter)) {
             switch (figureToMoveLetter) {
-                case 'K' -> foundFigures = board.getFigures(King.class, board.moveOfWhite);
-                case 'Q' -> foundFigures = board.getFigures(Queen.class, board.moveOfWhite);
-                case 'B' -> foundFigures = board.getFigures(Bishop.class, board.moveOfWhite);
-                case 'N' -> foundFigures = board.getFigures(Knight.class, board.moveOfWhite);
-                case 'R' -> foundFigures = board.getFigures(Rook.class, board.moveOfWhite);
+                case 'K' -> foundFigures = board.getFigures(King.class, board.isMoveOfWhite());
+                case 'Q' -> foundFigures = board.getFigures(Queen.class, board.isMoveOfWhite());
+                case 'B' -> foundFigures = board.getFigures(Bishop.class, board.isMoveOfWhite());
+                case 'N' -> foundFigures = board.getFigures(Knight.class, board.isMoveOfWhite());
+                case 'R' -> foundFigures = board.getFigures(Rook.class, board.isMoveOfWhite());
             }
         } else if(xOfFile(figureToMoveLetter) > 0){ // a to h
-            foundFigures = board.getFigures(Pawn.class, board.moveOfWhite);
-            foundFigures.removeIf((Predicate<Figure>) figure -> (figure.position.x != xOfFile(figureToMoveLetter)) || figure.isWhite != board.moveOfWhite);
+            foundFigures = board.getFigures(Pawn.class, board.isMoveOfWhite());
+            foundFigures.removeIf((Predicate<Figure>) figure -> (figure.position.x != xOfFile(figureToMoveLetter)) || figure.isWhite != board.isMoveOfWhite());
         } else {
             System.out.println("Couldn't resolve move");
             return;
@@ -371,12 +376,12 @@ public class MoveReader {
                     }
                 }
                 foundFigures.get(0).move(destination);
-                if(board.mated && moveReq.charAt(moveReq.length()-1) != '#') {
+                if(board.isMated() && moveReq.charAt(moveReq.length()-1) != '#') {
                     board.takeback();
                     System.out.println("Did you mean " + moveReq + "#?");
                     return;
                 }
-                if(board.getKing(board.moveOfWhite).checkers().size() != 0 && !board.mated && moveReq.charAt(moveReq.length()-1) != '+') {
+                if(board.getKing(board.isMoveOfWhite()).checkers().size() != 0 && !board.isMated() && moveReq.charAt(moveReq.length()-1) != '+') {
                     board.takeback();
                     System.out.println("Did you mean " + moveReq + "+?");
                 }

@@ -9,6 +9,7 @@ import com.company.figures.Figure;
 import com.company.figures.figure_impls.*;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static com.company.core.BoardLetters.*;
@@ -17,10 +18,17 @@ public class Board {
 
     public final List<Figure> figures = new ArrayList<>();
     private final List<Move> moves = new ArrayList<>();
+
     private Pawn enPassantablePawn = null;
-    public boolean mated = false;
-    public boolean moveOfWhite = true;
-    public boolean stalemate = false;
+
+    private boolean moveOfWhite = true;
+
+    private boolean mated = false;
+    private boolean stalemate = false;
+    private boolean repetition = false;
+    private final List<BoardPosition> positions = new LinkedList<>();
+
+    private boolean gameEnded = false;
 
     public void addFigure(Figure figure) throws OccupiedSquareException {
         if (findFigureByPosition(figure.position) == null) {
@@ -31,6 +39,9 @@ public class Board {
     }
 
     public void onMove(Move move) {
+        if(gameEnded) return;
+        BoardPosition currentPosition = new BoardPosition(this.toString(), this.isMoveOfWhite());
+        positions.add(currentPosition);
         if(enPassantablePawn != null) enPassantablePawn.enPassantable = false;
         if (move.movedFigure() instanceof Pawn) {
             if(move.movedFigure().isWhite) {
@@ -45,7 +56,7 @@ public class Board {
                 } else ((Pawn) move.movedFigure()).enPassanter = move.movedFigure().position.y == 4;
             }
         }
-        King lostKing = getKing(!moveOfWhite);
+        King lostKing = getKing(!isMoveOfWhite());
         var figuresCopy = new ArrayList<>(figures);
         if(lostKing.checkers().size() != 0 && lostKing.possibleMoves().size() == 0) { // under a check and has nowhere to go
             if(lostKing.checkers().size() > 1) {
@@ -57,31 +68,48 @@ public class Board {
                 // throws concurrent modification without copying
                 for(Figure f : figuresCopy) {
                     List<Position> fMoves = f.possibleMoves();
-                    if (f.isWhite == !moveOfWhite && (containsAny(fMoves, possibleCovers) || fMoves.contains(checkerPosition))) {
+                    if (f.isWhite == !isMoveOfWhite() && (containsAny(fMoves, possibleCovers) || fMoves.contains(checkerPosition))) {
                         canBeCoveredOrTaken = true;
                         break;
                     }
                 }
-                if(!canBeCoveredOrTaken) mated = true;
+                if(!canBeCoveredOrTaken) {
+                    mated = true;
+                    gameEnded = true;
+                }
             }
         }
         boolean stalemate = true;
         if(lostKing.checkers().size() == 0) {
             // if King is under a check the calling its possibleMoves() method throws UnsupportedOperationException for some reason
             for (Figure f : figuresCopy) {
-                if (f.isWhite == !this.moveOfWhite && f.possibleMoves().size() != 0) {
+                if (f.isWhite == !this.isMoveOfWhite() && f.possibleMoves().size() != 0) {
                     stalemate = false;
                 }
             }
         } else {
             stalemate = false;
         }
-
         if (stalemate) {
             this.stalemate = true;
+            this.gameEnded = true;
         }
+        if(!this.isStalemate() && !this.isMated()) {
+            int count = 0;
+            for(BoardPosition bp : positions) {
+                if(bp.equals(currentPosition)) {
+                    count++;
+                }
+                if(count == 3) break;
+            }
+            if (count == 3) {
+                repetition = true;
+                this.gameEnded = true;
+            }
+        }
+
         moves.add(move);
-        moveOfWhite = !moveOfWhite;
+        moveOfWhite = !isMoveOfWhite();
     }
 
     public void takeback() {
@@ -127,7 +155,7 @@ public class Board {
                 this.addFigure(captured);
             } catch (OccupiedSquareException ignore) {}
         }
-        moveOfWhite = !moveOfWhite;
+        moveOfWhite = !isMoveOfWhite();
     }
 
     public void removeFigure(Figure figure) {
@@ -249,7 +277,7 @@ public class Board {
     }
 
     public void render() {
-        if(moveOfWhite) {
+        if(isMoveOfWhite()) {
             for (int y = 8; y >= 1; y--) {
                 for (int x = 1; x <= 8; x++) {
                     Figure f = findFigureByPosition(new Position(x, y));
@@ -278,10 +306,45 @@ public class Board {
         }
     }
 
+    @Override
+    public String toString() {
+        StringBuilder board = new StringBuilder();
+        for (int y = 8; y >= 1; y--) {
+            for (int x = 1; x <= 8; x++) {
+                Figure f = findFigureByPosition(new Position(x, y));
+                if (f != null) board.append(f.figureChar);
+                else {
+                    char square = '⬛'; //,'⬜'
+                    if ((x + y) % 2 == 0) square = '⬜';
+                    board.append(square);
+                }
+            }
+            board.append("\n");
+        }
+
+        return board.toString();
+    }
+
     private static <T> boolean containsAny(List<T> container, List<T> elements) {
         for(T e : elements) {
             if(container.contains(e)) return true;
         }
         return false;
+    }
+
+    public boolean isStalemate() {
+        return stalemate;
+    }
+
+    public boolean isMoveOfWhite() {
+        return moveOfWhite;
+    }
+
+    public boolean isMated() {
+        return mated;
+    }
+
+    public boolean isRepetition() {
+        return repetition;
     }
 }
