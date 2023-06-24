@@ -35,10 +35,10 @@ public class Game {
         moveReader.makeMove("Qf3");
         moveReader.makeMove("Qxe5");
         moveReader.makeMove("Qxf5");
-        moveReader.makeMove("Bc5");
+        moveReader.makeMove("Bc5+");
         moveReader.makeMove("Kg2");
         moveReader.makeMove("d6");
-        moveReader.makeMove("Qxe5");
+        moveReader.makeMove("Qxe5+");
         moveReader.makeMove("dxe5");
         moveReader.makeMove("Re1");
         moveReader.makeMove("O-O");
@@ -68,11 +68,8 @@ public class Game {
         moveReader.makeMove("Rd8");
         moveReader.makeMove("Nxd5");
         moveReader.makeMove("Rxd5");
-        moveReader.makeMove("Re8#");
+        moveReader.requestMove();
 
-
-        board.render();
-        System.out.println(board.findFigureByPosition(new Position(G, 7)));
 
     }
 }

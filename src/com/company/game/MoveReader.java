@@ -205,6 +205,12 @@ public class MoveReader {
                 if(board.mated && moveReq.charAt(moveReq.length()-1) != '#') {
                     board.takeback();
                     System.out.println("Did you mean " + moveReq + "#?");
+                    requestMove();
+                    return;
+                }
+                if(board.getKing(!board.moveOfWhite).checkers() != null && !board.mated && moveReq.charAt(moveReq.length()-1) != '+') {
+                    board.takeback();
+                    System.out.println("Did you mean " + moveReq + "+?");
                 }
                 requestMove();
             }
@@ -313,7 +319,6 @@ public class MoveReader {
 
         if(foundFigures.size() == 0) {
             System.out.println("Impossible move, try again");
-            return;
         } else {
             StringBuilder moveReqCopy = new StringBuilder(moveReq1);
             moveReqCopy.deleteCharAt(0);
@@ -347,11 +352,8 @@ public class MoveReader {
             if (foundFigures.size() > 1) {
                 System.out.println("Couldn't identify the piece as multiple pieces can go to the specified square");
 
-                return;
             } else if(foundFigures.size() == 0) { // happens after something like g7=Q
                 System.out.println("Impossible move, try again");
-
-                return;
             } else {
                 Figure mover = foundFigures.get(0);
                 if(mover instanceof Pawn) {
@@ -365,8 +367,11 @@ public class MoveReader {
                 if(board.mated && moveReq.charAt(moveReq.length()-1) != '#') {
                     board.takeback();
                     System.out.println("Did you mean " + moveReq + "#?");
-
                     return;
+                }
+                if(board.getKing(board.moveOfWhite).checkers().size() != 0 && !board.mated && moveReq.charAt(moveReq.length()-1) != '+') {
+                    board.takeback();
+                    System.out.println("Did you mean " + moveReq + "+?");
                 }
             }
         }

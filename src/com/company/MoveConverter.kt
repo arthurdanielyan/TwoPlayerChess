@@ -1,5 +1,8 @@
 package com.company
 
+import java.awt.Toolkit
+import java.awt.datatransfer.StringSelection
+
 
 // convert chess.com pgn-s
 fun main() {
@@ -13,8 +16,10 @@ fun main() {
     }
 
     println(moves)
+    val movesCode = StringBuilder()
     moves.forEach {
-        val s = it.removeSuffix("+")
-        println("moveReader.makeMove(\"$s\");")
+        println("moveReader.makeMove(\"$it\");")
+        movesCode.append("moveReader.makeMove(\"$it\");\n")
     }
+    Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(movesCode.toString()), null)
 }
