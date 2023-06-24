@@ -1,6 +1,5 @@
 package com.company;
 
-import com.company.core.exceptions.OccupiedSquareException;
 import com.company.game.Game;
 
 public class Main {

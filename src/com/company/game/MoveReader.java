@@ -1,6 +1,7 @@
 package com.company.game;
 
 import com.company.core.Position;
+import com.company.core.exceptions.IllegalSquareException;
 import com.company.figures.Figure;
 import com.company.figures.figure_impls.*;
 
@@ -38,7 +39,13 @@ public class MoveReader {
 //            Thread.currentThread().stop();
             // Thread needs to be stopped because after all the readMove() methods return some bullshit will happen
         }// requiring the '+' sign, Move info and takebacks for castles and pawn promotions,
-
+        if(board.stalemate) {
+            System.out.println();
+            board.render();
+            System.out.println();
+            System.out.println("Draw by stalemate!");
+            return;
+        }
         if(board.moveOfWhite) moveOf = "White";
         else moveOf = "Black";
         System.out.println();
@@ -91,7 +98,7 @@ public class MoveReader {
         Position destination;
         try {
             destination = Position.toPosition(destinationSquareString);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | IllegalSquareException e) {
             if(moveReq1.charAt(moveReq1.length()-2) != '=') {
                 System.out.println("Couldn't resolve move");
                 requestMove();
@@ -208,7 +215,7 @@ public class MoveReader {
                     requestMove();
                     return;
                 }
-                if(board.getKing(!board.moveOfWhite).checkers() != null && !board.mated && moveReq.charAt(moveReq.length()-1) != '+') {
+                if(board.getKing(board.moveOfWhite).checkers().size() != 0 && !board.mated && moveReq.charAt(moveReq.length()-1) != '+') {
                     board.takeback();
                     System.out.println("Did you mean " + moveReq + "+?");
                 }

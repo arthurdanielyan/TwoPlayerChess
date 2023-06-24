@@ -50,7 +50,9 @@ public class Pawn extends Figure {
             } catch (OccupiedSquareException e) {
                 throw new IllegalMoveException("");
             }
-            return new Move(position, newPosition, this, capture, null, newPiece);
+            Move move = new Move(position, newPosition, this, capture, null, newPiece);
+            Game.board.onMove(move);
+            return move;
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
             // NoSuchException by the getConstructor method, the rest by the newInstance method
             e.printStackTrace();
@@ -85,6 +87,7 @@ public class Pawn extends Figure {
             if(position.y == 8) return possibleMoves;
             possibleMoves.add(new Position(position.x, position.y + 1));
             if(position.y == 2) {
+                if(Game.board.findFigureByPosition(new Position(position.x, position.y + 1)) == null)
                 possibleMoves.add(new Position(position.x, position.y + 2));
             }
             try {
@@ -122,6 +125,7 @@ public class Pawn extends Figure {
             if(position.y == 1) return possibleMoves;
             possibleMoves.add(new Position(position.x, position.y - 1));
             if(position.y == 7) {
+                if(Game.board.findFigureByPosition(new Position(position.x, position.y - 1)) == null)
                 possibleMoves.add(new Position(position.x, position.y - 2));
             }
             try {

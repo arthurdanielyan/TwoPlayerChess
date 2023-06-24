@@ -20,6 +20,7 @@ public class Board {
     private Pawn enPassantablePawn = null;
     public boolean mated = false;
     public boolean moveOfWhite = true;
+    public boolean stalemate = false;
 
     public void addFigure(Figure figure) throws OccupiedSquareException {
         if (findFigureByPosition(figure.position) == null) {
@@ -45,13 +46,13 @@ public class Board {
             }
         }
         King lostKing = getKing(!moveOfWhite);
+        var figuresCopy = new ArrayList<>(figures);
         if(lostKing.checkers().size() != 0 && lostKing.possibleMoves().size() == 0) { // under a check and has nowhere to go
             if(lostKing.checkers().size() > 1) {
                 mated = true;
             } else {
                 boolean canBeCoveredOrTaken = false;
                 var possibleCovers = lostKing.possibleCovers();
-                var figuresCopy = new ArrayList<>(figures);
                 Position checkerPosition = lostKing.checkers().get(0).position;
                 // throws concurrent modification without copying
                 for(Figure f : figuresCopy) {
@@ -64,7 +65,21 @@ public class Board {
                 if(!canBeCoveredOrTaken) mated = true;
             }
         }
+        boolean stalemate = true;
+        if(lostKing.checkers().size() == 0) {
+            // if King is under a check the calling its possibleMoves() method throws UnsupportedOperationException for some reason
+            for (Figure f : figuresCopy) {
+                if (f.isWhite == !this.moveOfWhite && f.possibleMoves().size() != 0) {
+                    stalemate = false;
+                }
+            }
+        } else {
+            stalemate = false;
+        }
 
+        if (stalemate) {
+            this.stalemate = true;
+        }
         moves.add(move);
         moveOfWhite = !moveOfWhite;
     }

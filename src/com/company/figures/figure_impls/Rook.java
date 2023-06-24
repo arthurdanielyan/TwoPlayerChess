@@ -63,9 +63,9 @@ public class Rook extends Figure {
         if(mr != MoveRestrictions.LTR_HOR) {
             for (int x = position.x + 1; x <= 8; x++) {
                 Figure figure = Game.board.findFigureByPosition(new Position(x, position.y));
-                if(figure == null || figure.isWhite != isWhite) {
+//                if(figure == null || figure.isWhite != isWhite) {
                     possibleMoves.add(new Position(x, position.y));
-                }
+//                }
                 if (figure != null) {
                     // if control && opposite king dont break => if either of these conditions is wrong then break
                     if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
@@ -74,9 +74,9 @@ public class Rook extends Figure {
             // left direction
             for (int x = position.x - 1; x >= 1; x--) {
                 Figure figure = Game.board.findFigureByPosition(new Position(x, position.y));
-                if(figure == null || figure.isWhite != isWhite) {
+//                if(figure == null || figure.isWhite != isWhite) {
                     possibleMoves.add(new Position(x, position.y));
-                }
+//                }
                 if (figure != null) {
                     // if control && opposite king dont break => if either of these conditions is wrong then break
                     if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
@@ -87,9 +87,9 @@ public class Rook extends Figure {
             // up direction
             for (int y = position.y + 1; y <= 8; y++) {
                 Figure figure = Game.board.findFigureByPosition(new Position(position.x, y));
-                if(figure == null || figure.isWhite != isWhite) {
+//                if(figure == null || figure.isWhite != isWhite) {
                     possibleMoves.add(new Position(position.x, y));
-                }
+//                }
                 if (figure != null) {
                     // if control && opposite king dont break => if either of these conditions is wrong then break
                     if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
@@ -98,9 +98,9 @@ public class Rook extends Figure {
             // down direction
             for (int y = position.y - 1; y >= 1; y--) {
                 Figure figure = Game.board.findFigureByPosition(new Position(position.x, y));
-                if(figure == null || figure.isWhite != isWhite) {
+//                if(figure == null || figure.isWhite != isWhite) {
                     possibleMoves.add(new Position(position.x, y));
-                }
+//                }
                 if (figure != null) {
                     // if control && opposite king dont break => if either of these conditions is wrong then break
                     if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
