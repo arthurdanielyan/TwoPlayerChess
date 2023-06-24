@@ -1,7 +1,8 @@
 package com.company.figures.figure_impls;
 
-import com.company.core.Move;
-import com.company.core.move_information_wrappers.MoveInfo;
+import com.company.core.move_information_wrappers.Castle;
+import com.company.core.move_information_wrappers.Move;
+import com.company.core.exceptions.IllegalMoveException;
 import com.company.game.Game;
 import com.company.core.BoardLetters;
 import com.company.core.Position;
@@ -13,6 +14,40 @@ import java.util.*;
 import static com.company.core.BoardLetters.*;
 
 public class King extends Figure {
+
+    public boolean isCastleable(boolean shortSide) {
+        if(!castleable) return false;
+        if(shortSide) {
+            if(isWhite) {
+                if(Game.board.findFigureByPosition(new Position(F, 1)) == null && Game.board.findFigureByPosition(new Position(BoardLetters.G, 1)) == null) {
+                    Figure rook = Game.board.findFigureByPosition(new Position(H, 1));
+                    if(rook == null) return false;
+                    return rook instanceof Rook && ((Rook) rook).castleable;
+                }
+            } else {
+                if(Game.board.findFigureByPosition(new Position(F, 8)) == null && Game.board.findFigureByPosition(new Position(BoardLetters.G, 8)) == null) {
+                    Figure rook = Game.board.findFigureByPosition(new Position(H, 8));
+                    if(rook == null) return false;
+                    return rook instanceof Rook && ((Rook) rook).castleable;
+                }
+            }
+        } else {
+            if(isWhite) {
+                if(Game.board.findFigureByPosition(new Position(B, 1)) == null && Game.board.findFigureByPosition(new Position(C, 1)) == null && Game.board.findFigureByPosition(new Position(D, 1)) == null) {
+                    Figure rook = Game.board.findFigureByPosition(new Position(A, 1));
+                    if(rook == null) return false;
+                    return rook instanceof Rook && ((Rook) rook).castleable;
+                }
+            } else {
+                if(Game.board.findFigureByPosition(new Position(B, 8)) == null && Game.board.findFigureByPosition(new Position(C, 8)) == null && Game.board.findFigureByPosition(new Position(D, 8)) == null) {
+                    Figure rook = Game.board.findFigureByPosition(new Position(A, 8));
+                    if(rook == null) return false;
+                    return rook instanceof Rook && ((Rook) rook).castleable;
+                }
+            }
+        }
+        return false;
+    }
 
     private boolean castleable = true;
 
@@ -27,66 +62,41 @@ public class King extends Figure {
         }
     }
 
-    public MoveInfo castle(boolean shortSide) {
-        if(!castleable) return new MoveInfo(null, false, false);
+    public Move castle(boolean shortSide) {
+        if(!isCastleable(shortSide)) throw new IllegalMoveException(this + " cannot castle");
         if(shortSide) {
+            Position to;
+            Move move;
             if(isWhite) {
-                if(Game.board.getFigureByPosition(new Position(F, 1)) == null && Game.board.getFigureByPosition(new Position(BoardLetters.G, 1)) == null) {
-                    Figure rook = Game.board.getFigureByPosition(new Position(H, 1));
-                    if(rook == null) return new MoveInfo(null, false, false);
-                    MoveInfo isRookCastleable = ((Rook) rook).castle(true);
-                    if(isRookCastleable.isLegal()) {
-                        Position to = new Position(G, 1);
-                        Game.board.onMove(new Move(position, to, this, null));
-                        position = to;
-                        return new MoveInfo(position, false, true);
-                    }
-                }
+                to = new Position(G, 1);
+                ((Rook) Game.board.findFigureByPosition(new Position(H, 1))).castle(true);
             } else {
-                if(Game.board.getFigureByPosition(new Position(F, 8)) == null && Game.board.getFigureByPosition(new Position(BoardLetters.G, 8)) == null) {
-                    Figure rook = Game.board.getFigureByPosition(new Position(H, 8));
-                    if(rook == null) return new MoveInfo(null, false, false);
-                    MoveInfo isRookCastleable = ((Rook) rook).castle(true);
-                    if(isRookCastleable.isLegal()) {
-                        Position to = new Position(G, 8);
-                        Game.board.onMove(new Move(position, to, this, null));
-                        position = to;
-                        return new MoveInfo(position, false, true);
-                    }
-                }
+                to = new Position(G, 8);
+                ((Rook) Game.board.findFigureByPosition(new Position(H, 8))).castle(true);
             }
+            move = new Move(position, to, this, null, new Castle(true), null);
+            position = to;
+            Game.board.onMove(move);
+            return move;
         } else {
+            Position to;
+            Move move;
             if(isWhite) {
-                if (Game.board.getFigureByPosition(new Position(B, 1)) == null && Game.board.getFigureByPosition(new Position(C, 1)) == null && Game.board.getFigureByPosition(new Position(D, 1)) == null) {
-                    Figure rook = Game.board.getFigureByPosition(new Position(A, 1));
-                    if (rook == null) return new MoveInfo(null, false, false);
-                    MoveInfo isRookCastleable = ((Rook) rook).castle(false);
-                    if (isRookCastleable.isLegal()) {
-                        Position to = new Position(C, 1);
-                        Game.board.onMove(new Move(position, to, this, null));
-                        position = to;
-                        return new MoveInfo(position, false, true);
-                    }
-                }
+                to = new Position(C, 1);
+                ((Rook) Game.board.findFigureByPosition(new Position(A, 1))).castle(false);
             } else {
-                if (Game.board.getFigureByPosition(new Position(B, 8)) == null && Game.board.getFigureByPosition(new Position(C, 8)) == null && Game.board.getFigureByPosition(new Position(D, 8)) == null) {
-                    Figure rook = Game.board.getFigureByPosition(new Position(A, 1));
-                    if (rook == null) return new MoveInfo(null, false, false);
-                    MoveInfo isRookCastleable = ((Rook) rook).castle(false);
-                    if (isRookCastleable.isLegal()) {
-                        Position to = new Position(C, 8);
-                        Game.board.onMove(new Move(position, to, this, null));
-                        position = to;
-                        return new MoveInfo(position, false, true);
-                    }
-                }
+                to = new Position(C, 8);
+                ((Rook) Game.board.findFigureByPosition(new Position(A, 8))).castle(false);
             }
+            move = new Move(position, to, this, null, new Castle(true), null);
+            position = to;
+            Game.board.onMove(move);
+            return move;
         }
-        return new MoveInfo(null, false, false);
     }
 
     @Override
-    public MoveInfo move(Position newPosition) {
+    public Move move(Position newPosition) {
         castleable = false;
         return super.move(newPosition);
     }
@@ -161,7 +171,7 @@ public class King extends Figure {
         Bishop bishopCheck = new Bishop(this.position, isWhite);
         Rook rookCheck = new Rook(this.position, isWhite);
         for(Position p : bishopCheck.controlSquares()) {
-            Figure f = Game.board.getFigureByPosition(p);
+            Figure f = Game.board.findFigureByPosition(p);
             if(f != null && f.isWhite != this.isWhite && (f instanceof Bishop || f instanceof Queen)) {
                 if(f instanceof Queen && f.position.x != this.position.x && f.position.y != this.position.y){
                     checkers.add(f);
@@ -173,7 +183,7 @@ public class King extends Figure {
             }
         }
         for(Position p : rookCheck.controlSquares()) {
-            Figure f = Game.board.getFigureByPosition(p);
+            Figure f = Game.board.findFigureByPosition(p);
             if(f != null && f.isWhite != this.isWhite && (f instanceof Rook || f instanceof Queen)) {
                 if(f instanceof Queen && (f.position.x == this.position.x || f.position.y == this.position.y)) {
                     checkers.add(f);
@@ -196,7 +206,7 @@ public class King extends Figure {
         if (checker instanceof Rook) coversFinder = new Rook(this.position, isWhite);
         else if (checker instanceof Bishop) coversFinder = new Bishop(this.position, isWhite);
         else if (checker instanceof Queen) {
-            if(checker.position.x != this.position.x || checker.position.y != this.position.y) {
+            if(checker.position.x != this.position.x && checker.position.y != this.position.y) {
                 coversFinder = new Bishop(this.position, isWhite);
             } else {
                 coversFinder = new Rook(this.position, isWhite);
@@ -206,7 +216,7 @@ public class King extends Figure {
 
         List<Position> possibleCovers = new LinkedList<>();
         List<Position> checkerMoves = checker.possibleMoves();
-        for(Position cover : coversFinder.possibleMoves()) {
+        for(Position cover : coversFinder.controlSquares()) {
             if (checkerMoves.contains(cover)) {
                 possibleCovers.add(cover);
             }

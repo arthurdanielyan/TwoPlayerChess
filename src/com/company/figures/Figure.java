@@ -1,7 +1,7 @@
 package com.company.figures;
 
-import com.company.core.Move;
-import com.company.core.move_information_wrappers.MoveInfo;
+import com.company.core.exceptions.IllegalMoveException;
+import com.company.core.move_information_wrappers.Move;
 import com.company.figures.figure_impls.*;
 import com.company.game.Game;
 import com.company.core.Position;
@@ -26,35 +26,28 @@ public abstract class Figure {
     /** isn't needed for Rook, Bishop and Queen, because their combinedMoves() function handles it */
     protected final void removeOccupiedCells(List<Position> possibleMoves) {
         possibleMoves.removeIf(position -> {
-            Figure figureAtPos = Game.board.getFigureByPosition(position);
+            Figure figureAtPos = Game.board.findFigureByPosition(position);
             return figureAtPos != null && figureAtPos.position.equals(position) && figureAtPos.isWhite == Figure.this.isWhite;
         });
     }
 
-    public MoveInfo move(Position newPosition) {
+    /** For pawn */
+    public Move move(Position newPosition, Class<? extends Figure> promoteTo) {
+        throw new IllegalMoveException("Only pawns can promote");
+    }
+
+    public Move move(Position newPosition) {
         if(possibleMoves().contains(newPosition)) {
-//            Position oldPosition = position;
-            boolean isCapture = false;
-            Figure victim = Game.board.getFigureByPosition(newPosition);
+            Figure victim = Game.board.findFigureByPosition(newPosition);
             if(victim != null) {
-                isCapture = true;
                 Game.board.removeFigure(victim);
             }
-            if(this instanceof Pawn) {
-
-                if(((Pawn) this).enPassanter && newPosition.x != position.x && victim == null) {
-                    // at this point it is known that an En Passant is being taken
-                    ((Pawn) this).enPassanter = false;
-                    Game.board.removeFigure(Game.board.getFigureByPosition(new Position(newPosition.x, position.y)));
-                    isCapture = true;
-                }
-            }
-            Move move = new Move(this.position, newPosition, this, victim);
+            Move move = new Move(this.position, newPosition, this, victim, null, null);
             position = newPosition;
             Game.board.onMove(move);
-            return new MoveInfo(newPosition, isCapture, true);
+            return move;
         }
-        return new MoveInfo(newPosition, false, false);
+        throw new IllegalMoveException(this + " cannot move to " + newPosition);
     }
 
 
@@ -81,31 +74,39 @@ public abstract class Figure {
         Rook rookCheck = new Rook(myKing.position, isWhite);
         Game.board.removeFigure(this);
         for(Position p : bishopCheck.controlSquares()) {
-            Figure f = Game.board.getFigureByPosition(p);
+            Figure f = Game.board.findFigureByPosition(p);
             if(f != null && f.isWhite != this.isWhite && (f instanceof Bishop || f instanceof Queen)) {
                 if(f.position.x != myKing.position.x && f.position.y != myKing.position.y){
                     try {
                         Game.board.addFigure(this);
                     } catch (OccupiedSquareException ignore) {}
-                    if(f.controlSquares().contains(this.position)) // DON'T REMOVE THIS ANYMORE IDIOT
+                    if(bishopCheck.controlSquares().contains(this.position)) // DON'T REMOVE THIS ANYMORE IDIOT
                     return f;
                 }
-                if(f.controlSquares().contains(this.position))
-                return f;
+                if(bishopCheck.controlSquares().contains(this.position)){
+                    try {
+                        Game.board.addFigure(this);
+                    } catch (OccupiedSquareException ignore) {}
+                    return f;
+                }
             }
         }
         for(Position p : rookCheck.controlSquares()) {
-            Figure f = Game.board.getFigureByPosition(p);
+            Figure f = Game.board.findFigureByPosition(p);
             if(f != null && f.isWhite != this.isWhite && (f instanceof Rook || f instanceof Queen)) {
                 if(f instanceof Queen && (f.position.x == myKing.position.x || f.position.y == myKing.position.y)) {
                     try {
                         Game.board.addFigure(this);
                     } catch (OccupiedSquareException ignore) {}
-                    if(f.controlSquares().contains(this.position))
+                    if(rookCheck.controlSquares().contains(this.position))
                     return f;
                 }
-                if(f.controlSquares().contains(this.position))
-                return f;
+                if(rookCheck.controlSquares().contains(this.position)) {
+                    try {
+                        Game.board.addFigure(this);
+                    } catch (OccupiedSquareException ignore) {}
+                    return f;
+                }
             }
         }
         try {

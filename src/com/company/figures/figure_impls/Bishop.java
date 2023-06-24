@@ -22,7 +22,10 @@ public class Bishop extends Figure {
         }
     }
 
-
+    /**
+     * @param control - if true this returns the squares which this figure "sees"(it can see
+     *                through the enemy king), squares where it can go otherwise
+     * */
     private List<Position> combinedMoves(boolean control, MoveRestrictions mr) {
         List<Position> possibleMoves = new ArrayList<>();
 
@@ -31,25 +34,25 @@ public class Bishop extends Figure {
         if(8 - position.x <= 8 - position.y) { // if closer to the right than to the top
             for (int i = 1; i <= 8 - position.x; i++) {
                 Position currentPos = new Position(position.x + i, position.y + i);
-                Figure figure = Game.board.getFigureByPosition(currentPos);
-                possibleMoves.add(currentPos);
+                Figure figure = Game.board.findFigureByPosition(currentPos);
+                if(figure == null || figure.isWhite != isWhite) {
+                    possibleMoves.add(currentPos);
+                }
                 if (figure != null) {
-                    if (!control && figure.isWhite != isWhite) break;
-                    if (figure.isWhite == isWhite && !(figure instanceof King)) {
-                        break;
-                    }
+                    // if control && opposite king dont break => if either of these conditions is wrong then break
+                    if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
                 }
             }
         } else {
             for (int i = 1; i <= 8 - position.y; i++) {
                 Position currentPos = new Position(position.x + i, position.y + i);
-                Figure figure = Game.board.getFigureByPosition(currentPos);
-                possibleMoves.add(currentPos);
+                Figure figure = Game.board.findFigureByPosition(currentPos);
+                if(figure == null || figure.isWhite != isWhite) {
+                    possibleMoves.add(currentPos);
+                }
                 if (figure != null) {
-                    if (!control && figure.isWhite != isWhite) break;
-                    if (figure.isWhite == isWhite && !(figure instanceof King)) {
-                        break;
-                    }
+                    // if control && opposite king dont break => if either of these conditions is wrong then break
+                    if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
                 }
             }
         }
@@ -58,25 +61,25 @@ public class Bishop extends Figure {
         if(8 - position.x <= position.y-1) { // if closer to the right than to the bottom
             for (int i = 1; i <= 8 - position.x; i++) {
                 Position currentPos = new Position(position.x + i, position.y - i);
-                Figure figure = Game.board.getFigureByPosition(currentPos);
-                possibleMoves.add(currentPos);
+                Figure figure = Game.board.findFigureByPosition(currentPos);
+                if(figure == null || figure.isWhite != isWhite) {
+                    possibleMoves.add(currentPos);
+                }
                 if (figure != null) {
-                    if (!control && figure.isWhite != isWhite) break;
-                    if (figure.isWhite == isWhite && !(figure instanceof King)) {
-                        break;
-                    }
+                    // if control && opposite king dont break => if either of these conditions is wrong then break
+                    if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
                 }
             }
         } else {
             for (int i = 1; i < position.y; i++) {
                 Position currentPos = new Position(position.x + i, position.y - i);
-                Figure figure = Game.board.getFigureByPosition(currentPos);
-                possibleMoves.add(currentPos);
+                Figure figure = Game.board.findFigureByPosition(currentPos);
+                if(figure == null || figure.isWhite != isWhite) {
+                    possibleMoves.add(currentPos);
+                }
                 if (figure != null) {
-                    if (!control && figure.isWhite != isWhite) break;
-                    if (figure.isWhite == isWhite && !(figure instanceof King)) {
-                        break;
-                    }
+                    // if control && opposite king dont break => if either of these conditions is wrong then break
+                    if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
                 }
             }
         }
@@ -85,25 +88,25 @@ public class Bishop extends Figure {
         if(position.x <= 8 - position.y) { // if closer to the left than to the top
             for (int i = 1; i < position.x; i++) {
                 Position currentPos = new Position(position.x - i, position.y + i);
-                Figure figure = Game.board.getFigureByPosition(currentPos);
-                possibleMoves.add(currentPos);
+                Figure figure = Game.board.findFigureByPosition(currentPos);
+                if(figure == null || figure.isWhite != isWhite) {
+                    possibleMoves.add(currentPos);
+                }
                 if (figure != null) {
-                    if (!control && figure.isWhite != isWhite) break;
-                    if (figure.isWhite == isWhite && !(figure instanceof King)) {
-                        break;
-                    }
+                    // if control && opposite king dont break => if either of these conditions is wrong then break
+                    if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
                 }
             }
         } else {
             for (int i = 1; i <= 8 - position.y; i++) {
                 Position currentPos = new Position(position.x - i, position.y + i);
-                Figure figure = Game.board.getFigureByPosition(currentPos);
-                possibleMoves.add(currentPos);
+                Figure figure = Game.board.findFigureByPosition(currentPos);
+                if(figure == null || figure.isWhite != isWhite) {
+                    possibleMoves.add(currentPos);
+                }
                 if (figure != null) {
-                    if (!control && figure.isWhite != isWhite) break;
-                    if (figure.isWhite == isWhite && !(figure instanceof King)) {
-                        break;
-                    }
+                    // if control && opposite king dont break => if either of these conditions is wrong then break
+                    if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
                 }
             }
         }
@@ -112,25 +115,25 @@ public class Bishop extends Figure {
         if(position.x <= position.y) { // if closer to the left than to the bottom
             for (int i = 1; i < position.x; i++) {
                 Position currentPos = new Position(position.x - i, position.y - i);
-                Figure figure = Game.board.getFigureByPosition(currentPos);
-                possibleMoves.add(currentPos);
+                Figure figure = Game.board.findFigureByPosition(currentPos);
+                if(figure == null || figure.isWhite != isWhite) {
+                    possibleMoves.add(currentPos);
+                }
                 if (figure != null) {
-                    if (!control && figure.isWhite != isWhite) break;
-                    if (figure.isWhite == isWhite && !(figure instanceof King)) {
-                        break;
-                    }
+                    // if control && opposite king dont break => if either of these conditions is wrong then break
+                    if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
                 }
             }
         } else {
             for (int i = 1; i < position.y; i++) {
                 Position currentPos = new Position(position.x - i, position.y - i);
-                Figure figure = Game.board.getFigureByPosition(currentPos);
-                possibleMoves.add(currentPos);
+                Figure figure = Game.board.findFigureByPosition(currentPos);
+                if(figure == null || figure.isWhite != isWhite) {
+                    possibleMoves.add(currentPos);
+                }
                 if (figure != null) {
-                    if (!control && figure.isWhite != isWhite) break;
-                    if (figure.isWhite == isWhite && !(figure instanceof King)) {
-                        break;
-                    }
+                    // if control && opposite king dont break => if either of these conditions is wrong then break
+                    if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
                 }
             }
         }
@@ -169,6 +172,8 @@ public class Bishop extends Figure {
 
         return combinedMoves(false, MoveRestrictions.FREE);
     }
+
+
 
     @Override
     public List<Position> controlSquares() {

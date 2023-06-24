@@ -5,7 +5,7 @@ import com.company.game.Game;
 
 public class Main {
 
-    public static void main(String[] args) throws OccupiedSquareException {
+    public static void main(String[] args) {
         Game.start();
     }
 }

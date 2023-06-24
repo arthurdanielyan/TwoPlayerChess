@@ -2,7 +2,8 @@ package com.company.figures.figure_impls;
 
 import com.company.core.BoardLetters;
 import com.company.core.Position;
-import com.company.core.move_information_wrappers.MoveInfo;
+import com.company.core.exceptions.IllegalMoveException;
+import com.company.core.move_information_wrappers.Move;
 import com.company.figures.Figure;
 import com.company.figures.figure_helpers.MoveRestrictions;
 import com.company.game.Game;
@@ -26,10 +27,8 @@ public class Rook extends Figure {
         }
     }
 
-    public MoveInfo castle(boolean shortSide) {
-        if(!castleable) {
-            return new MoveInfo(null, false, false);
-        }
+    void castle(boolean shortSide) {
+        if(!castleable) throw new IllegalMoveException(this + " cannot castle"); // never happens
         castleable = false;
         if(shortSide) {
             if(isWhite) {
@@ -44,11 +43,10 @@ public class Rook extends Figure {
                 position = new Position(BoardLetters.D, 8);
             }
         }
-        return new MoveInfo(position, false, true);
     }
 
     @Override
-    public MoveInfo move(Position newPosition) {
+    public Move move(Position newPosition) {
         castleable = false;
         return super.move(newPosition);
     }
@@ -64,48 +62,48 @@ public class Rook extends Figure {
         // right direction
         if(mr != MoveRestrictions.LTR_HOR) {
             for (int x = position.x + 1; x <= 8; x++) {
-                Figure figure = Game.board.getFigureByPosition(new Position(x, position.y));
-                possibleMoves.add(new Position(x, position.y));
+                Figure figure = Game.board.findFigureByPosition(new Position(x, position.y));
+                if(figure == null || figure.isWhite != isWhite) {
+                    possibleMoves.add(new Position(x, position.y));
+                }
                 if (figure != null) {
-                    if(!control && figure.isWhite != isWhite) break;
-                    if(figure.isWhite == isWhite && !(figure instanceof King)){
-                        break;
-                    }
+                    // if control && opposite king dont break => if either of these conditions is wrong then break
+                    if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
                 }
             }
             // left direction
             for (int x = position.x - 1; x >= 1; x--) {
-                Figure figure = Game.board.getFigureByPosition(new Position(x, position.y));
-                possibleMoves.add(new Position(x, position.y));
+                Figure figure = Game.board.findFigureByPosition(new Position(x, position.y));
+                if(figure == null || figure.isWhite != isWhite) {
+                    possibleMoves.add(new Position(x, position.y));
+                }
                 if (figure != null) {
-                    if(!control && figure.isWhite != isWhite) break;
-                    if(figure.isWhite == isWhite && !(figure instanceof King)){
-                        break;
-                    }
+                    // if control && opposite king dont break => if either of these conditions is wrong then break
+                    if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
                 }
             }
         }
         if(mr != MoveRestrictions.RTL_VER) {
             // up direction
             for (int y = position.y + 1; y <= 8; y++) {
-                Figure figure = Game.board.getFigureByPosition(new Position(position.x, y));
-                possibleMoves.add(new Position(position.x, y));
+                Figure figure = Game.board.findFigureByPosition(new Position(position.x, y));
+                if(figure == null || figure.isWhite != isWhite) {
+                    possibleMoves.add(new Position(position.x, y));
+                }
                 if (figure != null) {
-                    if (!control && figure.isWhite != isWhite) break;
-                    if (figure.isWhite == isWhite && !(figure instanceof King)) {
-                        break;
-                    }
+                    // if control && opposite king dont break => if either of these conditions is wrong then break
+                    if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
                 }
             }
             // down direction
             for (int y = position.y - 1; y >= 1; y--) {
-                Figure figure = Game.board.getFigureByPosition(new Position(position.x, y));
-                possibleMoves.add(new Position(position.x, y));
+                Figure figure = Game.board.findFigureByPosition(new Position(position.x, y));
+                if(figure == null || figure.isWhite != isWhite) {
+                    possibleMoves.add(new Position(position.x, y));
+                }
                 if (figure != null) {
-                    if(!control && figure.isWhite != isWhite) break;
-                    if(figure.isWhite == isWhite && !(figure instanceof King)){
-                        break;
-                    }
+                    // if control && opposite king dont break => if either of these conditions is wrong then break
+                    if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
                 }
             }
         }

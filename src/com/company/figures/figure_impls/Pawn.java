@@ -1,8 +1,10 @@
 package com.company.figures.figure_impls;
 
 import com.company.core.Position;
+import com.company.core.exceptions.IllegalMoveException;
 import com.company.core.exceptions.IllegalSquareException;
 import com.company.core.exceptions.OccupiedSquareException;
+import com.company.core.move_information_wrappers.Move;
 import com.company.figures.Figure;
 import com.company.game.Game;
 
@@ -26,28 +28,33 @@ public class Pawn extends Figure {
         }
     }
 
-    /**
-     * returns whether the promotion occurred successfully
-     * */
-    public boolean promote(Class<? extends Figure> newPieceType, Position newPosition) { // position is needed because promotion might happen with a capture
-        if (newPieceType.equals(Pawn.class) || !this.possibleMoves().contains(newPosition)) {
-            return false;
+    @Override
+    public Move move(Position newPosition, Class<? extends Figure> promoteTo) {
+        if (!this.possibleMoves().contains(newPosition)) {
+            throw new IllegalMoveException(this + " cannot move to " + newPosition);
+        }
+        if(promoteTo.equals(Pawn.class)) {
+            throw new IllegalMoveException(this + " tries to promote to a Pawn");
         }
         Game.board.removeFigure(this);
         Figure newPiece;
         try {
-            newPiece = newPieceType.getConstructor(Position.class, Boolean.TYPE).newInstance(newPosition, this.isWhite);
+            newPiece = promoteTo.getConstructor(Position.class, Boolean.TYPE).newInstance(newPosition, this.isWhite);
+            Figure capture;
             try {
-                Figure takes = Game.board.getFigureByPosition(newPosition);
-                if(takes != null) {
-                    Game.board.removeFigure(takes);
+                capture = Game.board.findFigureByPosition(newPosition);
+                if(capture != null) {
+                    Game.board.removeFigure(capture);
                 }
                 Game.board.addFigure(newPiece);
-            } catch (OccupiedSquareException e) { return false; }
-            return true;
+            } catch (OccupiedSquareException e) {
+                throw new IllegalMoveException("");
+            }
+            return new Move(position, newPosition, this, capture, null, newPiece);
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
             // NoSuchException by the getConstructor method, the rest by the newInstance method
-            return false;
+            e.printStackTrace();
+            throw new IllegalMoveException("");
         }
     }
 
@@ -60,10 +67,10 @@ public class Pawn extends Figure {
                 Pawn passantable1 = null;
                 Pawn passantable2 = null;
                 try {
-                    passantable1 = (Pawn) Game.board.getFigureByPosition(new Position(position.x + 1, position.y));
+                    passantable1 = (Pawn) Game.board.findFigureByPosition(new Position(position.x + 1, position.y));
                 } catch (Exception ignore) {} // either ClassCast or IllegalSquare
                 try {
-                    passantable2 = (Pawn) Game.board.getFigureByPosition(new Position(position.x - 1, position.y));
+                    passantable2 = (Pawn) Game.board.findFigureByPosition(new Position(position.x - 1, position.y));
                 } catch (Exception ignore) {} // either ClassCast or IllegalSquare
 
 
@@ -81,13 +88,13 @@ public class Pawn extends Figure {
                 possibleMoves.add(new Position(position.x, position.y + 2));
             }
             try {
-                Figure rightTake = Game.board.getFigureByPosition(new Position(position.x + 1, position.y + 1));
+                Figure rightTake = Game.board.findFigureByPosition(new Position(position.x + 1, position.y + 1));
                 if(rightTake != null) {
                     possibleMoves.add(rightTake.position);
                 }
             } catch (IllegalSquareException ignore) {}
             try {
-                Figure leftTake = Game.board.getFigureByPosition(new Position(position.x - 1, position.y + 1));
+                Figure leftTake = Game.board.findFigureByPosition(new Position(position.x - 1, position.y + 1));
                 if(leftTake != null) {
                     possibleMoves.add(leftTake.position);
                 }
@@ -97,10 +104,10 @@ public class Pawn extends Figure {
                 Pawn passantable1 = null;
                 Pawn passantable2 = null;
                 try {
-                    passantable1 = (Pawn) Game.board.getFigureByPosition(new Position(position.x + 1, position.y));
+                    passantable1 = (Pawn) Game.board.findFigureByPosition(new Position(position.x + 1, position.y));
                 } catch (Exception ignore) {} // either ClassCast or IllegalSquare
                 try {
-                    passantable2 = (Pawn) Game.board.getFigureByPosition(new Position(position.x - 1, position.y));
+                    passantable2 = (Pawn) Game.board.findFigureByPosition(new Position(position.x - 1, position.y));
                 } catch (Exception ignore) {} // either ClassCast or IllegalSquare
 
 
@@ -118,13 +125,13 @@ public class Pawn extends Figure {
                 possibleMoves.add(new Position(position.x, position.y - 2));
             }
             try {
-                Figure rightTake = Game.board.getFigureByPosition(new Position(position.x + 1, position.y - 1));
+                Figure rightTake = Game.board.findFigureByPosition(new Position(position.x + 1, position.y - 1));
                 if(rightTake != null) {
                     possibleMoves.add(rightTake.position);
                 }
             } catch (IllegalSquareException ignore) {}
             try {
-                Figure leftTake = Game.board.getFigureByPosition(new Position(position.x - 1, position.y - 1));
+                Figure leftTake = Game.board.findFigureByPosition(new Position(position.x - 1, position.y - 1));
                 if(leftTake != null) {
                     possibleMoves.add(leftTake.position);
                 }

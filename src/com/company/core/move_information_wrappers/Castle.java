@@ -1,2 +1,6 @@
-package com.company.core.move_information_wrappers;public class Castle {
+package com.company.core.move_information_wrappers;
+
+public record Castle(
+        boolean shortSide
+) {
 }
