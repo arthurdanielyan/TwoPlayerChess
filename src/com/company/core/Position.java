@@ -4,15 +4,13 @@ import com.company.core.exceptions.IllegalSquareException;
 
 import java.util.Objects;
 
-import static com.company.core.Extensions.isLegalSquare;
-
 public class Position {
 
     public int y; /** numbers on the board */
     public int x; /** letters on the board */
 
     public Position(int x, int y) {
-        if(!isLegalSquare(x) || !isLegalSquare(y)) {
+        if(isLegalSquare(x) || isLegalSquare(y)) {
             throw new IllegalSquareException(x, y);
         }
 
@@ -51,7 +49,7 @@ public class Position {
         return Objects.hash(y, x);
     }
 
-    public static Position toPosition(String square) throws IllegalArgumentException {
+    public static Position fromString(String square) throws IllegalArgumentException {
         if(square.length() > 2) throw new IllegalArgumentException("Provided string " + square + " doesn't represent any square");
         int x;
         switch(square.charAt(0)) {
@@ -68,5 +66,9 @@ public class Position {
 
 
         return new Position(x, Character.getNumericValue(square.charAt(1)));
+    }
+
+    private static boolean isLegalSquare(int n) {
+        return (n < 1 || n > 8);
     }
 }

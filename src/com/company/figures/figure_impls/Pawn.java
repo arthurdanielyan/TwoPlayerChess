@@ -87,7 +87,7 @@ public class Pawn extends Figure {
             if(position.y == 8) return possibleMoves;
             possibleMoves.add(new Position(position.x, position.y + 1));
             if(position.y == 2) {
-                if(Game.board.findFigureByPosition(new Position(position.x, position.y + 1)) == null)
+                if(Game.board.findFigureByPosition(new Position(position.x, position.y + 2)) == null)
                 possibleMoves.add(new Position(position.x, position.y + 2));
             }
             try {
@@ -125,7 +125,7 @@ public class Pawn extends Figure {
             if(position.y == 1) return possibleMoves;
             possibleMoves.add(new Position(position.x, position.y - 1));
             if(position.y == 7) {
-                if(Game.board.findFigureByPosition(new Position(position.x, position.y - 1)) == null)
+                if(Game.board.findFigureByPosition(new Position(position.x, position.y - 2)) == null)
                 possibleMoves.add(new Position(position.x, position.y - 2));
             }
             try {

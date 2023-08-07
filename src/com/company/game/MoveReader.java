@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.function.Predicate;
 
-import static com.company.core.Extensions.isLegalSquare;
-
 public class MoveReader {
 
     private final List<Character> figureLetters = Arrays.asList('K', 'Q', 'B', 'N', 'R');
@@ -133,7 +131,7 @@ public class MoveReader {
         }
         Position destination;
         try {
-            destination = Position.toPosition(destinationSquareString);
+            destination = Position.fromString(destinationSquareString);
         } catch (IllegalArgumentException | IllegalSquareException e) {
             if(moveReq1.charAt(moveReq1.length()-2) != '=') {
                 System.out.println("Couldn't resolve move");
@@ -142,7 +140,7 @@ public class MoveReader {
             } else {
                 destinationSquareString = moveReq1.substring(moveReq1.length() - 4, moveReq1.length() - 2);
                 try {
-                    destination = Position.toPosition(destinationSquareString);
+                    destination = Position.fromString(destinationSquareString);
                     if((board.isMoveOfWhite() && destination.y == 8) || (!board.isMoveOfWhite() && destination.y == 1))
                     pawnPromotion = true;
                 } catch (IllegalArgumentException e1) {
@@ -263,7 +261,7 @@ public class MoveReader {
 
     /**
      * This is the same as readMove(String), but this doesn't require the user to write
-     * the move. THis for doing some testing
+     * the move. This is for doing some testing
      * */
     public void makeMove(String moveReq) {
         if(moveReq.equals("O-O-O")) {
@@ -302,7 +300,7 @@ public class MoveReader {
         }
         Position destination;
         try {
-            destination = Position.toPosition(destinationSquareString);
+            destination = Position.fromString(destinationSquareString);
         } catch (IllegalArgumentException e) {
             if(moveReq1.charAt(moveReq1.length()-2) != '=') {
                 System.out.println("Couldn't resolve move");
@@ -310,7 +308,7 @@ public class MoveReader {
             } else {
                 destinationSquareString = moveReq1.substring(moveReq1.length() - 4, moveReq1.length() - 2);
                 try {
-                    destination = Position.toPosition(destinationSquareString);
+                    destination = Position.fromString(destinationSquareString);
                     if((board.isMoveOfWhite() && destination.y == 8) || (!board.isMoveOfWhite() && destination.y == 1))
                         pawnPromotion = true;
                 } catch (IllegalArgumentException e1) {
@@ -427,4 +425,7 @@ public class MoveReader {
         return -1;
     }
 
+    private static boolean isLegalSquare(int n) {
+        return (n >= 1 && n <= 8);
+    }
 }
