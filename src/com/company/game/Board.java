@@ -27,6 +27,8 @@ public class Board {
     private boolean stalemate = false;
     private boolean repetition = false;
     private boolean insufficientMaterial = false;
+    private boolean fiftyMoveDraw = false;
+    private int fiftyMove = 0;
     private final List<BoardPosition> positions = new LinkedList<>();
 
     private boolean gameEnded = false;
@@ -108,9 +110,42 @@ public class Board {
                 this.gameEnded = true;
             }
         }
-        if(this.figures.size() == 2) {
+        // Insufficient material checks
+        if(this.figures.size() == 2) { // king versus king
             insufficientMaterial = true;
             this.gameEnded = true;
+        } else if(this.figures.size() == 3) { // king and (bishop or knight) versus king
+            for(Figure f : this.figures) {
+                if(f instanceof Bishop || f instanceof Knight) {
+                    insufficientMaterial = true;
+                    this.gameEnded = true;
+                    break;
+                }
+            }
+        } else if(this.figures.size() == 4) { // king and bishop versus king and bishop with the bishops on the same color
+            boolean bishop = false;
+            boolean isWhite = false;
+            for(Figure f : this.figures) {
+                if(!bishop && f instanceof Bishop) {
+                    bishop = true;
+                    isWhite = f.isWhite;
+                    continue;
+                }
+                if(bishop && f instanceof Bishop && f.isWhite != isWhite) {
+                    insufficientMaterial = true;
+                    this.gameEnded = true;
+                    break;
+                }
+            }
+        }
+        if(!(move.movedFigure() instanceof Pawn) && move.capturedFigure() == null) {
+            fiftyMove++;
+            if(fiftyMove >= 50) {
+                fiftyMoveDraw = true;
+                this.gameEnded = true;
+            }
+        } else {
+            fiftyMove = 0;
         }
 
         moves.add(move);
@@ -119,6 +154,7 @@ public class Board {
 
     public void takeback() {
         mated = false;
+        this.gameEnded = false;
         Move lastMove = moves.get(moves.size()-1);
         if(lastMove.castle() != null) {
             if(lastMove.castle().shortSide()) {
@@ -179,7 +215,7 @@ public class Board {
 
     @SuppressWarnings("unchecked")
     public <T extends Figure> List<T> getFigures(Class<T> figureType, boolean isWhite) {
-        List<T> reqFigures = new ArrayList<>();
+        List<T> reqFigures = new LinkedList<>();
         for(Figure f : this.figures) {
             if(f.isWhite == isWhite && f.getClass().equals(figureType)) {
                 reqFigures.add((T) f);
@@ -337,9 +373,6 @@ public class Board {
         return false;
     }
 
-    public boolean isStalemate() {
-        return stalemate;
-    }
 
     public boolean isMoveOfWhite() {
         return moveOfWhite;
@@ -349,11 +382,23 @@ public class Board {
         return mated;
     }
 
+    public boolean isDraw() {
+        return isStalemate() || isRepetition() || isInsufficientMaterial() || isFiftyMoveDraw();
+    }
+
+    public boolean isStalemate() {
+        return stalemate;
+    }
+
     public boolean isRepetition() {
         return repetition;
     }
 
     public boolean isInsufficientMaterial() {
         return insufficientMaterial;
+    }
+
+    public boolean isFiftyMoveDraw() {
+        return fiftyMoveDraw;
     }
 }

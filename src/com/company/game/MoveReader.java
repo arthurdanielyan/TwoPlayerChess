@@ -35,26 +35,32 @@ public class MoveReader {
             }
             return;
         }
-        if(board.isStalemate()) {
-            System.out.println();
-            board.render();
-            System.out.println();
-            System.out.println("Draw by stalemate!");
-            return;
-        }
-        if(board.isRepetition()) {
-            System.out.println();
-            board.render();
-            System.out.println();
-            System.out.println("Draw by repetition!");
-            return;
-        }
-        if(board.isInsufficientMaterial()) {
-            System.out.println();
-            board.render();
-            System.out.println();
-            System.out.println("Draw by insufficient material!");
-            return;
+        if(board.isDraw()) {
+            if (board.isStalemate()) {
+                System.out.println();
+                board.render();
+                System.out.println();
+                System.out.println("Draw by stalemate!");
+                return;
+            } else if (board.isRepetition()) {
+                System.out.println();
+                board.render();
+                System.out.println();
+                System.out.println("Draw by repetition!");
+                return;
+            } else if (board.isInsufficientMaterial()) {
+                System.out.println();
+                board.render();
+                System.out.println();
+                System.out.println("Draw by insufficient material!");
+                return;
+            } else { // fifty move
+                System.out.println();
+                board.render();
+                System.out.println();
+                System.out.println("Draw because no progress!");
+                return;
+            }
         }
         if(board.isMoveOfWhite()) moveOf = "White";
         else moveOf = "Black";
@@ -261,25 +267,49 @@ public class MoveReader {
 
     /**
      * This is the same as readMove(String), but this doesn't require the user to write
-     * the move. This is for doing some testing
+     * the move. This is for testing
      * */
     public void makeMove(String moveReq) {
-        if(moveReq.equals("O-O-O")) {
-            King castlingKing = board.getKing(board.isMoveOfWhite());
-            if(!castlingKing.isCastleable(false)) {
-                System.out.println("Impossible move, try again");
-            } else {
-                castlingKing.castle(false);
+        switch (moveReq) {
+            case "1/2 - 1/2", "1/2-1/2" -> {
+                System.out.println();
+                board.render();
+                System.out.println();
+                System.out.println("Draw by agreement!");
+                return;
             }
-            return;
-        } else if (moveReq.equals("O-O")) {
-            King castlingKing = board.getKing(board.isMoveOfWhite());
-            if(!castlingKing.isCastleable(true)) {
-                System.out.println("Impossible move, try again");
-            } else {
-                castlingKing.castle(true);
+            case "1-0" -> {
+                System.out.println();
+                board.render();
+                System.out.println();
+                System.out.println("White won by resignation!");
+                return;
             }
-            return;
+            case "0-1" -> {
+                System.out.println();
+                board.render();
+                System.out.println();
+                System.out.println("Black won by resignation!");
+                return;
+            }
+            case "O-O-O" -> {
+                King castlingKing = board.getKing(board.isMoveOfWhite());
+                if (!castlingKing.isCastleable(false)) {
+                    System.out.println("Impossible move, try again");
+                } else {
+                    castlingKing.castle(false);
+                }
+                return;
+            }
+            case "O-O" -> {
+                King castlingKing = board.getKing(board.isMoveOfWhite());
+                if (!castlingKing.isCastleable(true)) {
+                    System.out.println("Impossible move, try again");
+                } else {
+                    castlingKing.castle(true);
+                }
+                return;
+            }
         }
 
         String moveReq1 = moveReq;
@@ -301,7 +331,7 @@ public class MoveReader {
         Position destination;
         try {
             destination = Position.fromString(destinationSquareString);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | IllegalSquareException e) {
             if(moveReq1.charAt(moveReq1.length()-2) != '=') {
                 System.out.println("Couldn't resolve move");
                 return;
@@ -371,7 +401,6 @@ public class MoveReader {
             // now the destination the figure character (or a pawn's file) and the takes (if there was) mark are removed from the move query
             if(moveReqCopy.length() == 0 && foundFigures.size() > 1) {
                 System.out.println("Couldn't identify the piece as multiple pieces can go to the specified square");
-
                 return;
             }
             final String identifier = moveReqCopy.toString();
@@ -392,7 +421,6 @@ public class MoveReader {
 
             if (foundFigures.size() > 1) {
                 System.out.println("Couldn't identify the piece as multiple pieces can go to the specified square");
-
             } else if(foundFigures.size() == 0) { // happens after something like g7=Q
                 System.out.println("Impossible move, try again");
             } else {
@@ -400,7 +428,6 @@ public class MoveReader {
                 if(mover instanceof Pawn) {
                     if((mover.isWhite && destination.y == 8) || (!mover.isWhite && destination.y == 1)) {
                         System.out.println("Specify the piece which the pawn should promote to");
-
                         return;
                     }
                 }

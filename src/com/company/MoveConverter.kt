@@ -4,7 +4,7 @@ import java.awt.Toolkit
 import java.awt.datatransfer.StringSelection
 
 
-// convert chess.com pgn-s
+// converts moves to commands
 fun main() {
     val input = readLine()
     val moves = input!!

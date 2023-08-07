@@ -35,9 +35,7 @@ public class Bishop extends Figure {
             for (int i = 1; i <= 8 - position.x; i++) {
                 Position currentPos = new Position(position.x + i, position.y + i);
                 Figure figure = Game.board.findFigureByPosition(currentPos);
-                if(figure == null || figure.isWhite != isWhite) {
-                    possibleMoves.add(currentPos);
-                }
+                possibleMoves.add(currentPos);
                 if (figure != null) {
                     // if control && opposite king dont break => if either of these conditions is wrong then break
                     if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
@@ -47,9 +45,7 @@ public class Bishop extends Figure {
             for (int i = 1; i <= 8 - position.y; i++) {
                 Position currentPos = new Position(position.x + i, position.y + i);
                 Figure figure = Game.board.findFigureByPosition(currentPos);
-                if(figure == null || figure.isWhite != isWhite) {
-                    possibleMoves.add(currentPos);
-                }
+                possibleMoves.add(currentPos);
                 if (figure != null) {
                     // if control && opposite king dont break => if either of these conditions is wrong then break
                     if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
@@ -62,9 +58,7 @@ public class Bishop extends Figure {
             for (int i = 1; i <= 8 - position.x; i++) {
                 Position currentPos = new Position(position.x + i, position.y - i);
                 Figure figure = Game.board.findFigureByPosition(currentPos);
-                if(figure == null || figure.isWhite != isWhite) {
-                    possibleMoves.add(currentPos);
-                }
+                possibleMoves.add(currentPos);
                 if (figure != null) {
                     // if control && opposite king dont break => if either of these conditions is wrong then break
                     if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
@@ -74,9 +68,7 @@ public class Bishop extends Figure {
             for (int i = 1; i < position.y; i++) {
                 Position currentPos = new Position(position.x + i, position.y - i);
                 Figure figure = Game.board.findFigureByPosition(currentPos);
-                if(figure == null || figure.isWhite != isWhite) {
-                    possibleMoves.add(currentPos);
-                }
+                possibleMoves.add(currentPos);
                 if (figure != null) {
                     // if control && opposite king dont break => if either of these conditions is wrong then break
                     if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
@@ -89,9 +81,7 @@ public class Bishop extends Figure {
             for (int i = 1; i < position.x; i++) {
                 Position currentPos = new Position(position.x - i, position.y + i);
                 Figure figure = Game.board.findFigureByPosition(currentPos);
-                if(figure == null || figure.isWhite != isWhite) {
-                    possibleMoves.add(currentPos);
-                }
+                possibleMoves.add(currentPos);
                 if (figure != null) {
                     // if control && opposite king dont break => if either of these conditions is wrong then break
                     if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
@@ -101,9 +91,7 @@ public class Bishop extends Figure {
             for (int i = 1; i <= 8 - position.y; i++) {
                 Position currentPos = new Position(position.x - i, position.y + i);
                 Figure figure = Game.board.findFigureByPosition(currentPos);
-                if(figure == null || figure.isWhite != isWhite) {
-                    possibleMoves.add(currentPos);
-                }
+                possibleMoves.add(currentPos);
                 if (figure != null) {
                     // if control && opposite king dont break => if either of these conditions is wrong then break
                     if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
@@ -116,9 +104,7 @@ public class Bishop extends Figure {
             for (int i = 1; i < position.x; i++) {
                 Position currentPos = new Position(position.x - i, position.y - i);
                 Figure figure = Game.board.findFigureByPosition(currentPos);
-                if(figure == null || figure.isWhite != isWhite) {
-                    possibleMoves.add(currentPos);
-                }
+                possibleMoves.add(currentPos);
                 if (figure != null) {
                     // if control && opposite king dont break => if either of these conditions is wrong then break
                     if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
@@ -128,9 +114,7 @@ public class Bishop extends Figure {
             for (int i = 1; i < position.y; i++) {
                 Position currentPos = new Position(position.x - i, position.y - i);
                 Figure figure = Game.board.findFigureByPosition(currentPos);
-                if(figure == null || figure.isWhite != isWhite) {
-                    possibleMoves.add(currentPos);
-                }
+                possibleMoves.add(currentPos);
                 if (figure != null) {
                     // if control && opposite king dont break => if either of these conditions is wrong then break
                     if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
