@@ -4,11 +4,9 @@ import com.company.core.Position;
 import com.company.figures.Figure;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Queen extends Figure {
-
 
     public Queen(Position position, boolean isWhite) {
         super(position, isWhite);
@@ -20,7 +18,6 @@ public class Queen extends Figure {
             figureChar = '♕';
         }
     }
-
 
     @Override
     public List<Position> possibleMoves() {

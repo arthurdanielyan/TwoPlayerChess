@@ -6,7 +6,6 @@ public class IllegalSquareException extends IndexOutOfBoundsException {
     private final int x;
     private final int y;
 
-
     public IllegalSquareException(int x, int y) {
         this.x = x;
         this.y = y;
@@ -23,11 +22,11 @@ public class IllegalSquareException extends IndexOutOfBoundsException {
             illegalY = true;
         }
         if(illegalX && illegalY) {
-            return "x and y of Position must be in range of [0, 8], but is " + x + ", " + y;
+            return "x and y of Position must be in range of [1, 8], but are " + x + ", " + y;
         }
         if(illegalX) {
-            return "x of Position must be in range of [0, 8], but is " + x;
+            return "x of Position must be in range of [1, 8], but is " + x;
         }
-        return "y of Position must be in range of [0, 8], but is " + y;
+        return "y of Position must be in range of [1, 8], but is " + y;
     }
 }

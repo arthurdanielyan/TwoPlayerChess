@@ -111,14 +111,13 @@ public class King extends Figure {
         return possibleMoves;
     }
 
-
     protected void removeUnderCheckCells(List<Position> possibleMoves) {
         /*
             The copy of Game.board.figures is needed because combinedMoves(),
             which is needed to reduce duplicate code for possibleMoves() and
             controlSquares(), calls isPinned() method, which determines whether the
             piece is pinned by removing it from the figures list, but the piece
-            that is pinned can also block the King from coming to a specific
+            that is pinned can also prevent the King from coming to a specific
             square. And the other reason of copying the list is that otherwise it
             would throw ConcurrentModificationException because Game.board.figures
             would be modified by the isPinned() method while here a for-each loop is

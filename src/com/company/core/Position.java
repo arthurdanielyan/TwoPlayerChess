@@ -18,6 +18,10 @@ public class Position {
         this.y = y;
     }
 
+    public boolean isLightSquare() {
+        return (x+y)%2 != 0;
+    }
+
     @Override
     public String toString() {
         String letter;

@@ -142,7 +142,6 @@ public class Pawn extends Figure {
             } catch (IllegalSquareException ignore) {}
         }
 
-
         if(isPinned() != null) { // excluding moves
             Figure pinner = isPinned();
             if(isWhite) {

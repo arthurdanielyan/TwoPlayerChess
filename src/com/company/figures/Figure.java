@@ -1,11 +1,14 @@
 package com.company.figures;
 
-import com.company.core.exceptions.IllegalMoveException;
-import com.company.core.move_information_wrappers.Move;
-import com.company.figures.figure_impls.*;
-import com.company.game.Game;
 import com.company.core.Position;
+import com.company.core.exceptions.IllegalMoveException;
 import com.company.core.exceptions.OccupiedSquareException;
+import com.company.core.move_information_wrappers.Move;
+import com.company.figures.figure_impls.Bishop;
+import com.company.figures.figure_impls.King;
+import com.company.figures.figure_impls.Queen;
+import com.company.figures.figure_impls.Rook;
+import com.company.game.Game;
 
 import java.util.List;
 import java.util.Objects;
@@ -14,7 +17,7 @@ public abstract class Figure {
 
     public Position position;
 
-    public char figureChar;
+    protected char figureChar;
     public final boolean isWhite;
 
     protected Figure(Position position, boolean isWhite) {
@@ -51,6 +54,10 @@ public abstract class Figure {
     }
 
 
+    /**
+     *
+     * @return - the squares where this piece can move to
+     */
     public abstract List<Position> possibleMoves();
 
     /** King should check controlled squares in order to exclude them
@@ -59,9 +66,11 @@ public abstract class Figure {
      *
      *  Example: Ke3, Re2
      *
-     *  The only difference between implementations of this and possibleMoves()
-     *  is that this ignores the opposite color king as a piece, and doesn't
-     *  care whether the piece is pinned and also contains the first figure on its way
+     *  The difference between implementations of this and possibleMoves()
+     *  is that this ignores the opposite color king as a piece, doesn't
+     *  care whether the piece is pinned and contains the first figure on its way
+     *
+     * @return - the list of squares this piece "sees" (can see through the enemy King)
      * */
     public abstract List<Position> controlSquares();
 
@@ -115,18 +124,17 @@ public abstract class Figure {
         return null;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Figure figure = (Figure) o;
-        return figureChar == figure.figureChar && isWhite == figure.isWhite && position.equals(figure.position);
+        return getFigureChar() == figure.getFigureChar() && isWhite == figure.isWhite && position.equals(figure.position);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(position, figureChar, isWhite);
+        return Objects.hash(position, getFigureChar(), isWhite);
     }
 
     @Override
@@ -144,5 +152,9 @@ public abstract class Figure {
           .append(position);
 
         return sb.toString();
+    }
+
+    public char getFigureChar() {
+        return figureChar;
     }
 }

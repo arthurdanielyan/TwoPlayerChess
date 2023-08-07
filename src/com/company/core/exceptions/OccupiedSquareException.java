@@ -12,6 +12,6 @@ public class OccupiedSquareException extends Exception {
 
     @Override
     public String getMessage() {
-        return "Square " + position.toString() + " is Occupied";
+        return "Square " + position.toString() + " is occupied";
     }
 }

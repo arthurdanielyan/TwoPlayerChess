@@ -59,7 +59,6 @@ public class Knight extends Figure {
 
     @Override
     public List<Position> possibleMoves() {
-
         if(isPinned() != null) {
             return Collections.emptyList();
         }

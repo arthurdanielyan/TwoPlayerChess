@@ -1,6 +1,6 @@
 package com.company.core;
 
-/** Numeric representation of letters on board */
+/** Letters of the board represented as numbers */
 public class BoardLetters {
     public static final int A = 1;
     public static final int B = 2;

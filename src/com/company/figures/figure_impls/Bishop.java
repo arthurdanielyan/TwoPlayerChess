@@ -157,11 +157,8 @@ public class Bishop extends Figure {
         return combinedMoves(false, MoveRestrictions.FREE);
     }
 
-
-
     @Override
     public List<Position> controlSquares() {
-        // isWhite check is not necessarily needed
         return combinedMoves(true, MoveRestrictions.FREE);
     }
 }

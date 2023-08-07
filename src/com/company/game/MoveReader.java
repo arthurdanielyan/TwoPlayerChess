@@ -21,7 +21,7 @@ public class MoveReader {
         this.board = board;
     }
 
-//    @SuppressWarnings("deprecation")
+
     public void requestMove() {
         String moveOf;
         if(board.isMated()) {
