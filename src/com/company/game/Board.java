@@ -13,6 +13,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.company.core.BoardLetters.*;
+import static com.company.game.Symbols.BLACK_SQUARE;
+import static com.company.game.Symbols.WHITE_SQUARE;
 
 public class Board {
 
@@ -336,8 +338,8 @@ public class Board {
                     Figure f = findFigureByPosition(p);
                     if (f != null) System.out.print(f.getFigureChar());
                     else {
-                        char square = '⬜'; //,'⬜'
-                        if (p.isLightSquare()) square = '⬛';
+                        String square = WHITE_SQUARE; //,'⬜'
+                        if (p.isLightSquare()) square = BLACK_SQUARE;
                         System.out.print(square + " ");
                     }
                 }
@@ -350,8 +352,8 @@ public class Board {
                     Figure f = findFigureByPosition(p);
                     if (f != null) System.out.print(f.getFigureChar());
                     else {
-                        char square = '⬜'; //,'⬜'
-                        if (p.isLightSquare()) square = '⬛';
+                        String square = WHITE_SQUARE; //,'⬜'
+                        if (p.isLightSquare()) square = BLACK_SQUARE;
                         System.out.print(square + " ");
                     }
                 }
@@ -369,8 +371,8 @@ public class Board {
                 Figure f = findFigureByPosition(p);
                 if (f != null) board.append(f.getFigureChar());
                 else {
-                    char square = '⬜'; //,'⬜'
-                    if (p.isLightSquare()) square = '⬛';
+                    String square = WHITE_SQUARE; //,'⬜'
+                    if (p.isLightSquare()) square = BLACK_SQUARE;
                     board.append(square);
                 }
             }
