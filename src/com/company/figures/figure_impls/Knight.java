@@ -3,7 +3,6 @@ package com.company.figures.figure_impls;
 import com.company.core.Position;
 import com.company.core.exceptions.IllegalSquareException;
 import com.company.figures.Figure;
-import com.company.figures.figure_helpers.MoveRestrictions;
 import com.company.game.Game;
 
 import java.util.ArrayList;

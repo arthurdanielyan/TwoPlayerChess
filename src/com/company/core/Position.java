@@ -10,7 +10,7 @@ public class Position {
     public int x; /** letters on the board */
 
     public Position(int x, int y) {
-        if(isLegalSquare(x) || isLegalSquare(y)) {
+        if(isIllegalSquare(x) || isIllegalSquare(y)) {
             throw new IllegalSquareException(x, y);
         }
 
@@ -72,7 +72,7 @@ public class Position {
         return new Position(x, Character.getNumericValue(square.charAt(1)));
     }
 
-    private static boolean isLegalSquare(int n) {
+    private static boolean isIllegalSquare(int n) {
         return (n < 1 || n > 8);
     }
 }

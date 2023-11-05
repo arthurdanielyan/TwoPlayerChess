@@ -61,7 +61,7 @@ public class Board {
         }
         King lostKing = getKing(!isMoveOfWhite());
         var figuresCopy = new ArrayList<>(figures);
-        if(lostKing.checkers().size() != 0 && lostKing.possibleMoves().size() == 0) { // under a check and has nowhere to go
+        if(!lostKing.checkers().isEmpty() && lostKing.possibleMoves().isEmpty()) { // under a check and has nowhere to go
             if(lostKing.checkers().size() > 1) {
                 mated = true;
             } else {
@@ -83,10 +83,10 @@ public class Board {
             }
         }
         boolean stalemate = true;
-        if(lostKing.checkers().size() == 0) {
+        if(lostKing.checkers().isEmpty()) {
             // if the King is under a check the calling of its possibleMoves() method throws UnsupportedOperationException for some reason
             for (Figure f : figuresCopy) {
-                if (f.isWhite == !this.isMoveOfWhite() && f.possibleMoves().size() != 0) {
+                if (f.isWhite == !this.isMoveOfWhite() && !f.possibleMoves().isEmpty()) {
                     stalemate = false;
                 }
             }

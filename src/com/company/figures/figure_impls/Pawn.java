@@ -14,8 +14,8 @@ import java.util.List;
 
 public class Pawn extends Figure {
 
-    public boolean enPassantable = false; // whether can be taken with En Passant
-    public boolean enPassanter = false; // whether can take En Passant
+    public boolean enPassantable = false; // whether this can be taken with En Passant
+    public boolean enPassanter = false; // whether this can take En Passant
 
     public Pawn(Position position, boolean isWhite) {
         super(position, isWhite);

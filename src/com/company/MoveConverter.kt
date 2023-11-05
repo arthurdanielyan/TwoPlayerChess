@@ -16,8 +16,8 @@ import java.awt.datatransfer.StringSelection
  *  in a single line
  * */
 fun main() {
-    val input = readLine()
-    val moves = input!!
+    val input = readln()
+    val moves = input
         .split(' ')
         .toMutableList()
 

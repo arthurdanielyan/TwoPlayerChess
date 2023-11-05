@@ -200,7 +200,7 @@ public class MoveReader {
             }
         }
 
-        if(foundFigures.size() == 0) {
+        if(foundFigures.isEmpty()) {
             System.out.println("Impossible move, try again");
             requestMove();
         } else {
@@ -212,7 +212,7 @@ public class MoveReader {
             } catch (StringIndexOutOfBoundsException ignore) {}
             moveReqCopy = new StringBuilder(moveReqCopy.toString().replace("x", ""));
             // now the destination the figure character (or a pawn's file) and the takes (if there was) mark are removed from the move query
-            if(moveReqCopy.length() == 0 && foundFigures.size() > 1) {
+            if(moveReqCopy.isEmpty() && foundFigures.size() > 1) {
                 System.out.println("Couldn't identify the piece as multiple pieces can go to the specified square");
                 requestMove();
                 return;
@@ -236,7 +236,7 @@ public class MoveReader {
             if (foundFigures.size() > 1) {
                 System.out.println("Couldn't identify the piece as multiple pieces can go to the specified square");
                 requestMove();
-            } else if(foundFigures.size() == 0) { // happens after something like g7=Q
+            } else if(foundFigures.isEmpty()) { // happens after something like g7=Q
                 System.out.println("Impossible move, try again");
                 requestMove();
             } else {
@@ -255,7 +255,7 @@ public class MoveReader {
                     requestMove();
                     return;
                 }
-                if(board.getKing(board.isMoveOfWhite()).checkers().size() != 0 && !board.isMated() && moveReq.charAt(moveReq.length()-1) != '+') {
+                if(!board.getKing(board.isMoveOfWhite()).checkers().isEmpty() && !board.isMated() && moveReq.charAt(moveReq.length()-1) != '+') {
                     board.takeback();
                     System.out.println("Did you mean " + moveReq + "+?");
                 }
@@ -388,7 +388,7 @@ public class MoveReader {
             }
         }
 
-        if(foundFigures.size() == 0) {
+        if(foundFigures.isEmpty()) {
             System.out.println("Impossible move, try again");
         } else {
             StringBuilder moveReqCopy = new StringBuilder(moveReq1);
@@ -399,7 +399,7 @@ public class MoveReader {
             } catch (StringIndexOutOfBoundsException ignore) {}
             moveReqCopy = new StringBuilder(moveReqCopy.toString().replace("x", ""));
             // now the destination the figure character (or a pawn's file) and the takes (if there was) mark are removed from the move query
-            if(moveReqCopy.length() == 0 && foundFigures.size() > 1) {
+            if(moveReqCopy.isEmpty() && foundFigures.size() > 1) {
                 System.out.println("Couldn't identify the piece as multiple pieces can go to the specified square");
                 return;
             }
@@ -421,7 +421,7 @@ public class MoveReader {
 
             if (foundFigures.size() > 1) {
                 System.out.println("Couldn't identify the piece as multiple pieces can go to the specified square");
-            } else if(foundFigures.size() == 0) { // happens after something like g7=Q
+            } else if(foundFigures.isEmpty()) { // happens after something like g7=Q
                 System.out.println("Impossible move, try again");
             } else {
                 Figure mover = foundFigures.get(0);
@@ -437,7 +437,7 @@ public class MoveReader {
                     System.out.println("Did you mean " + moveReq + "#?");
                     return;
                 }
-                if(board.getKing(board.isMoveOfWhite()).checkers().size() != 0 && !board.isMated() && moveReq.charAt(moveReq.length()-1) != '+') {
+                if(!board.getKing(board.isMoveOfWhite()).checkers().isEmpty() && !board.isMated() && moveReq.charAt(moveReq.length()-1) != '+') {
                     board.takeback();
                     System.out.println("Did you mean " + moveReq + "+?");
                 }

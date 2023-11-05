@@ -65,7 +65,7 @@ public class Rook extends Figure {
                 Figure figure = Game.board.findFigureByPosition(new Position(x, position.y));
                 possibleMoves.add(new Position(x, position.y));
                 if (figure != null) {
-                    // if control && opposite king dont break => if either of these conditions is wrong then break
+                    // if control && opposite king don't break => if either of these conditions is wrong then break
                     if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
                 }
             }
@@ -74,7 +74,7 @@ public class Rook extends Figure {
                 Figure figure = Game.board.findFigureByPosition(new Position(x, position.y));
                 possibleMoves.add(new Position(x, position.y));
                 if (figure != null) {
-                    // if control && opposite king dont break => if either of these conditions is wrong then break
+                    // if control && opposite king don't break => if either of these conditions is wrong then break
                     if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
                 }
             }
@@ -85,7 +85,7 @@ public class Rook extends Figure {
                 Figure figure = Game.board.findFigureByPosition(new Position(position.x, y));
                 possibleMoves.add(new Position(position.x, y));
                 if (figure != null) {
-                    // if control && opposite king dont break => if either of these conditions is wrong then break
+                    // if control && opposite king don't break => if either of these conditions is wrong then break
                     if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
                 }
             }
@@ -94,7 +94,7 @@ public class Rook extends Figure {
                 Figure figure = Game.board.findFigureByPosition(new Position(position.x, y));
                 possibleMoves.add(new Position(position.x, y));
                 if (figure != null) {
-                    // if control && opposite king dont break => if either of these conditions is wrong then break
+                    // if control && opposite king don't break => if either of these conditions is wrong then break
                     if(!control || figure.isWhite == isWhite || !(figure instanceof King)) break;
                 }
             }
